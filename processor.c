@@ -35,7 +35,7 @@ int save_bin(uint8_t *buf, size_t buf_size, char *path)
 {
 	int fd;
 	
-	fd = open(path, O_WRONLY | O_CREAT, 0777); 	
+	fd = open(path, O_WRONLY | O_CREAT, 0444); 	
 	if (fd < 0)
 		return fd;
 
