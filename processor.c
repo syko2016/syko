@@ -51,17 +51,27 @@ void error(char *fun_name)
 	exit(1);
 }
 
+int prepare_bufs(uint8_t *memc, size_t memc_size, uint8_t *memd, 
+		 size_t memd_size)
+{
+	int rt;
+
+	rt = load(memc, MEMC_SIZE, "file_code.bin");
+	if (rt < 0)
+		return rt;
+
+	rt = load(memd, MEMD_SIZE, "file_data_in.bin");
+
+	return rt;
+}
+
 int main(void)
 { 
 	int rt;
 	
-	rt = load(memc, MEMC_SIZE, "file_code.bin");
+	rt = prepare_bufs(memc, MEMC_SIZE, memd, MEMD_SIZE);
 	if (rt < 0)
-		error("load");
-
-	rt = load(memd, MEMD_SIZE, "file_data_in.bin");
-	if (rt < 0)
-		error("load");
+		error("prepare_bufs");
 	
 	rt = save(memd, MEMD_SIZE, "file_data_out.bin");
 	if (rt < 0)
