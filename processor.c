@@ -14,7 +14,7 @@
 uint8_t memc[MEMC_SIZE];
 uint8_t memd[MEMD_SIZE];
 
-int load_bin(uint8_t *buf, size_t buf_size, char *path)
+int load(uint8_t *buf, size_t buf_size, char *path)
 {
 	int fd;
 	ssize_t cnt;
@@ -31,11 +31,11 @@ int load_bin(uint8_t *buf, size_t buf_size, char *path)
 	return cnt;	
 }
 
-int save_bin(uint8_t *buf, size_t buf_size, char *path)
+int save(uint8_t *buf, size_t buf_size, char *path)
 {
 	int fd;
 	
-	fd = open(path, O_WRONLY | O_CREAT, 0444); 	
+	fd = open(path, O_WRONLY | O_CREAT, 0666); 	
 	if (fd < 0)
 		return fd;
 
@@ -45,9 +45,9 @@ int save_bin(uint8_t *buf, size_t buf_size, char *path)
 	return 0;
 }
 
-void error_handler(char *msg)
+void error(char *fun_name)
 {
-	perror(msg);
+	perror(fun_name);
 	exit(1);
 }
 
@@ -55,17 +55,17 @@ int main(void)
 { 
 	int rt;
 	
-	rt = load_bin(memc, MEMC_SIZE, "file_code.bin");
+	rt = load(memc, MEMC_SIZE, "file_code.bin");
 	if (rt < 0)
-		error_handler("load_bin");
+		error("load");
 
-	rt = load_bin(memd, MEMD_SIZE, "file_data_in.bin");
+	rt = load(memd, MEMD_SIZE, "file_data_in.bin");
 	if (rt < 0)
-		error_handler("load_bin");
+		error("load");
 	
-	rt = save_bin(memd, MEMD_SIZE, "file_data_out.bin");
+	rt = save(memd, MEMD_SIZE, "file_data_out.bin");
 	if (rt < 0)
-		error_handler("save_bin");
+		error("save");
 
 	return 0;
 } 
