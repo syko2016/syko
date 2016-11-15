@@ -144,8 +144,14 @@ int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address);
  */
 int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address);
 
-void cm0_incr_PC(struct cm0 *proc);
-void cm0_decode_op(struct cm0 *proc, uint16_t op);
+/** @brief Processor run function.
+ *
+ *  Function fetches all instructions from program memory, executes them,
+ * and returns 0 on exit.
+ */
+int cm0_run(struct cm0 *proc);
+int cm0_incr_PC(struct cm0 *proc);
+uint16_t cm0_get_instr(struct cm0 *proc);
 
 void cm0_LDR(struct cm0 *proc);
 void cm0_STR(struct cm0 *proc);

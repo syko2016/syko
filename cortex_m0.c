@@ -50,7 +50,6 @@ static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc,
 	return 0;
 }
 
-
 void cm0_reset(struct cm0 *proc)
 {
 	/* TODO */
@@ -133,11 +132,31 @@ int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address)
 	return 0;
 }
 
-void cm0_incr_PC(struct cm0 *proc)
+int cm0_incr_PC(struct cm0 *proc)
 {
 	uint32_t pc = cm0_get_reg(proc, PC);
-	pc++;
+	pc += 2;
+	
+	/* End of file detection */
+	if (proc->memc[pc] == 10)
+		return -1;
+
 	cm0_set_reg(proc, PC, pc);	
+	return 0;
+}
+
+uint16_t cm0_get_instr(struct cm0 *proc)
+{
+	uint16_t instr;
+	uint32_t pc;
+
+	pc = cm0_get_reg(proc, PC);
+	
+	/* Little endian to big endian conversion */
+	instr = proc->memc[pc] << 8;
+	instr |= proc->memc[pc + 1];
+
+	return instr;
 }
 
 void cm0_LDR(struct cm0 *proc)
@@ -189,7 +208,17 @@ void cm0_REV(struct cm0 *proc)
 
 }
 
-void cm0_decode_op(struct cm0 *proc, uint16_t op)
+int cm0_run(struct cm0 *proc)
 {
-
+	uint16_t instr;
+	do {
+		instr = cm0_get_instr(proc);
+		cm0_incr_PC(proc);
+		/* switch condition generates more comfortable opcode. */
+		switch ((instr & 0xF800) >> 11) {
+		default:
+			break;	
+		}
+	} while (0);
+	return 0;
 }

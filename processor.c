@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "cortex_m0.h"
 
@@ -68,6 +69,8 @@ int main(void)
 	rt = cm0_set_memd(&proc, buf_memd, CM0_MEMD_SIZE, 0);
 	if (rt < 0)
 		error("cm0_set_memd");
+
+	cm0_run(&proc);
 
 	rt = save(cm0_get_memd(&proc), CM0_MEMD_SIZE, "file_data_out.bin");
 	if (rt < 0)
