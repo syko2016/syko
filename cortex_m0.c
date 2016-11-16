@@ -30,8 +30,9 @@ static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc,
 		return &proc->regs.R11;
 	case R12:
 		return &proc->regs.R12;
+	/* TODO: SP, and MSP/PSP problem */
 	case MSP:
-		return &proc->regs.MSP;
+		return &proc->regs.MSP;	
 	case PSP:
 		return &proc->regs.PSP;
 	case LR:
@@ -81,6 +82,7 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off)
 	return 0;
 }
 
+/* not tested. */
 int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off)
 {
 	if (buf_size + off > CM0_MEMD_SIZE) {
@@ -96,6 +98,7 @@ const uint8_t *cm0_get_memd(struct cm0 *proc)
 	return proc->memd;
 }
 
+/* not tested. */
 int cm0_set_byte(struct cm0 *proc, uint8_t value, size_t address)
 {
 	if (address > CM0_MEMD_SIZE) {
@@ -106,6 +109,7 @@ int cm0_set_byte(struct cm0 *proc, uint8_t value, size_t address)
 	return 0;
 }
 
+/* not tested. */
 int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address)
 {
 	if (address + sizeof(uint16_t) > CM0_MEMD_SIZE) {
@@ -119,6 +123,7 @@ int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address)
 	return 0;
 }
 
+/* not tested. */
 int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address)
 {
 	if (address + sizeof(uint32_t) > CM0_MEMD_SIZE) {
@@ -137,8 +142,8 @@ int cm0_incr_PC(struct cm0 *proc)
 	uint32_t pc = cm0_get_reg(proc, PC);
 	pc += 2;
 	
-	/* End of file detection */
-	if (proc->memc[pc] == 10)
+	/* End of code detection */
+	if ((proc->memc[pc] | proc->memc[pc + 1]) == 0)
 		return -1;
 
 	cm0_set_reg(proc, PC, pc);	
@@ -194,9 +199,14 @@ void cm0_B(struct cm0 *proc)
 
 }
 
-void cm0_MOV(struct cm0 *proc)
+void cm0_MOV_immediate(struct cm0 *proc)
 {
+	printf("MOV (immediate) called.\n");
+}
 
+void cm0_MOV_register(struct cm0 *proc)
+{
+	printf("MOV (register) called.\n");
 }
 
 void cm0_BL(struct cm0 *proc)
@@ -211,14 +221,31 @@ void cm0_REV(struct cm0 *proc)
 int cm0_run(struct cm0 *proc)
 {
 	uint16_t instr;
+	int ret;
 	do {
 		instr = cm0_get_instr(proc);
-		cm0_incr_PC(proc);
-		/* switch condition generates more comfortable opcode. */
-		switch ((instr & 0xF800) >> 11) {
+		ret = cm0_incr_PC(proc);
+
+		/* 
+		 * Because of LE/BE differences, opcode here is on lower byte! 
+		 * Thats why to get opcode, expression (instr & 0x00F8) is 
+		 * used. 0x00F8 equals to 0b11111000.
+		 */
+		switch (instr & 0x00F8) {
+		/* MOV (immediate) instruction opcode */
+		case 0b00100000:
+			cm0_MOV_immediate(proc);
+			break;
+
+		case 0b01000000:
+			/* MOV (register) instruction opcode */
+			if ((instr & 0x00FF) == 0b01000110)
+				cm0_MOV_register(proc);
+			break;
 		default:
+			printf("cm0_run default called.\n");
 			break;	
 		}
-	} while (0);
+	} while (!ret);
 	return 0;
 }

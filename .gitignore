@@ -2,7 +2,6 @@
 *.bin
 *.elf
 *.lst
-*.s
 *.o
 *.swp
 processor
