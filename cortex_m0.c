@@ -160,8 +160,8 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 	pc = cm0_get_reg(proc, PC);
 	
 	/* Little endian to big endian conversion */
-	instr = proc->memc[pc] << 8;
-	instr |= proc->memc[pc + 1];
+	instr = (uint16_t)proc->memc[pc];
+	instr |= proc->memc[pc + 1] << 8;
 
 	return instr;
 }
@@ -209,28 +209,28 @@ void cm0_ADD_SP_plus_register_T2(struct cm0 *proc)
 int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 {
 
-	if ((instr & 0b0000000011111000) == 0b0000000010101000)
+	if ((instr & 0b1111100000000000) == 0b1010100000000000)
 		cm0_ADD_SP_plus_immediate_T1(proc);
 
-	else if ((instr & 0b1000000011111111) == 0b0000000010110000)
+	else if ((instr & 0b1111111110000000) == 0b1011000000000000)
 		cm0_ADD_SP_plus_immediate_T2(proc);
 
-	else if ((instr & 0b0111100011111111) == 0b0110100001000100)
-		cm0_ADD_SP_plus_register_T1(proc);
+	else if ((instr & 0b1111111101111000) == 0b0100010001101000)
+		cm0_ADD_SP_plus_register_T1(proc); 	
 
-	else if ((instr & 0b1000011111111111) == 0b1000010101000100)
+	else if ((instr & 0b1111111110000111) == 0b0100010010000101)
 		cm0_ADD_SP_plus_register_T2(proc);
 
-	else if ((instr & 0b0000000011111111) == 0b0000000000011100)
+	else if ((instr & 0b1111111100000000) == 0b0001110000000000)
 		cm0_ADD_immediate_T1(proc);
 
-	else if ((instr & 0b0000000011111000) == 0b0000000000110000)
+	else if ((instr & 0b1111100000000000) == 0b0011000000000000)
 		cm0_ADD_immediate_T2(proc);
 	
-	else if ((instr & 0b0000000011111110) == 0b0000000000011000)
+	else if ((instr & 0b1111111000000000) == 0b0001100000000000)
 		cm0_ADD_register_T1(proc);
 
-	else if ((instr & 0b0000000011111111) == 0b0000000001000100)
+	else if ((instr & 0b1111111100000000) == 0b0100010000000000)
 		cm0_ADD_register_T2(proc);
 	else 
 		printf("%s got instruction %04x, which is not understandable."
