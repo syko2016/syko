@@ -1,5 +1,7 @@
 #include "cortex_m0.h"
 
+#define print_name()	printf("%s\n", __func__);
+
 static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc, 
 					 enum cm0_reg_name reg)
 {
@@ -164,58 +166,77 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 	return instr;
 }
 
-void cm0_LDR(struct cm0 *proc)
+void cm0_ADD_immediate_T1(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_STR(struct cm0 *proc)
+void cm0_ADD_immediate_T2(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_LDM(struct cm0 *proc)
+void cm0_ADD_register_T1(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_ADD(struct cm0 *proc)
+void cm0_ADD_register_T2(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_ANDS(struct cm0 *proc)
+void cm0_ADD_SP_plus_immediate_T1(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_ASRS(struct cm0 *proc)
+void cm0_ADD_SP_plus_immediate_T2(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_B(struct cm0 *proc)
+void cm0_ADD_SP_plus_register_T1(struct cm0 *proc)
 {
-
+	print_name();
 }
 
-void cm0_MOV_immediate(struct cm0 *proc)
+void cm0_ADD_SP_plus_register_T2(struct cm0 *proc)
 {
-	printf("MOV (immediate) called.\n");
+	print_name();
 }
 
-void cm0_MOV_register(struct cm0 *proc)
+int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 {
-	printf("MOV (register) called.\n");
-}
+	if ((instr & 0b1000000011111111) == 0b0000000010110000)
+		cm0_ADD_SP_plus_immediate_T2(proc);
 
-void cm0_BL(struct cm0 *proc)
-{
+	else if ((instr & 0b0111100011111111) == 0b0110100001000100)
+		cm0_ADD_SP_plus_register_T1(proc);
 
-}
-void cm0_REV(struct cm0 *proc)
-{
+	else if ((instr & 0b1000011111111111) == 0b1000010101000100)
+		cm0_ADD_SP_plus_register_T2(proc);
 
+	else if ((instr & 0b11111111) == 0b00011100)
+		cm0_ADD_immediate_T1(proc);
+
+	else if ((instr & 0b11111000) == 0b00110000)
+		cm0_ADD_immediate_T2(proc);
+	
+	else if ((instr & 0b11111110) == 0b00011000)
+		cm0_ADD_register_T1(proc);
+
+	else if ((instr & 0b11111111) == 0b01000100)
+		cm0_ADD_register_T2(proc);
+
+	else if ((instr & 0b11111000) == 0b10101000)
+		cm0_ADD_SP_plus_immediate_T1(proc);
+
+	else 
+		printf("%s got instruction %04x, which is not understandable."
+		"\n", __func__, instr);
+
+	return 0;
 }
 
 int cm0_run(struct cm0 *proc)
@@ -225,27 +246,7 @@ int cm0_run(struct cm0 *proc)
 	do {
 		instr = cm0_get_instr(proc);
 		ret = cm0_incr_PC(proc);
-
-		/* 
-		 * Because of LE/BE differences, opcode here is on lower byte! 
-		 * Thats why to get opcode, expression (instr & 0x00F8) is 
-		 * used. 0x00F8 equals to 0b11111000.
-		 */
-		switch (instr & 0x00F8) {
-		/* MOV (immediate) instruction opcode */
-		case 0b00100000:
-			cm0_MOV_immediate(proc);
-			break;
-
-		case 0b01000000:
-			/* MOV (register) instruction opcode */
-			if ((instr & 0x00FF) == 0b01000110)
-				cm0_MOV_register(proc);
-			break;
-		default:
-			printf("cm0_run default called.\n");
-			break;	
-		}
+		cm0_decode_instruction(proc, instr);
 	} while (!ret);
 	return 0;
 }
