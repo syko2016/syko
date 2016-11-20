@@ -208,7 +208,11 @@ void cm0_ADD_SP_plus_register_T2(struct cm0 *proc)
 
 int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 {
-	if ((instr & 0b1000000011111111) == 0b0000000010110000)
+
+	if ((instr & 0b0000000011111000) == 0b0000000010101000)
+		cm0_ADD_SP_plus_immediate_T1(proc);
+
+	else if ((instr & 0b1000000011111111) == 0b0000000010110000)
 		cm0_ADD_SP_plus_immediate_T2(proc);
 
 	else if ((instr & 0b0111100011111111) == 0b0110100001000100)
@@ -217,21 +221,17 @@ int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 	else if ((instr & 0b1000011111111111) == 0b1000010101000100)
 		cm0_ADD_SP_plus_register_T2(proc);
 
-	else if ((instr & 0b11111111) == 0b00011100)
+	else if ((instr & 0b0000000011111111) == 0b0000000000011100)
 		cm0_ADD_immediate_T1(proc);
 
-	else if ((instr & 0b11111000) == 0b00110000)
+	else if ((instr & 0b0000000011111000) == 0b0000000000110000)
 		cm0_ADD_immediate_T2(proc);
 	
-	else if ((instr & 0b11111110) == 0b00011000)
+	else if ((instr & 0b0000000011111110) == 0b0000000000011000)
 		cm0_ADD_register_T1(proc);
 
-	else if ((instr & 0b11111111) == 0b01000100)
+	else if ((instr & 0b0000000011111111) == 0b0000000001000100)
 		cm0_ADD_register_T2(proc);
-
-	else if ((instr & 0b11111000) == 0b10101000)
-		cm0_ADD_SP_plus_immediate_T1(proc);
-
 	else 
 		printf("%s got instruction %04x, which is not understandable."
 		"\n", __func__, instr);
