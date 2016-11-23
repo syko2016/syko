@@ -27,5 +27,3 @@ main:
 	ldr	r0, [r1, r2]
 	mov	r0, #128
 	mov	r9, r10
-	movs	r0, r0
-	//movs <Rd>, <Rm>, ASR #<n>
