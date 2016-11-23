@@ -206,6 +206,21 @@ void cm0_ADD_SP_plus_register_T2(struct cm0 *proc)
 	print_name();
 }
 
+void cm0_ANDS(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_ASR_immediate(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_ASR_register(struct cm0 *proc)
+{
+	print_name();
+}
+
 int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 {
 
@@ -232,6 +247,16 @@ int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 
 	else if ((instr & 0b1111111100000000) == 0b0100010000000000)
 		cm0_ADD_register_T2(proc);
+	
+	else if ((instr & 0b1111111111000000) == 0b0100000000000000)
+		cm0_ANDS(proc);
+		
+	else if ((instr & 0b1111100000000000) == 0b0001000000000000)
+		cm0_ASR_immediate(proc);
+	
+	else if ((instr & 0b1111111111000000) == 0b0100000100000000)
+		cm0_ASR_register(proc);
+
 	else 
 		printf("%s got instruction %04x, which is not understandable."
 		"\n", __func__, instr);
