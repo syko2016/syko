@@ -221,8 +221,82 @@ void cm0_ASR_register(struct cm0 *proc)
 	print_name();
 }
 
-int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
+void cm0_B_T1(struct cm0 *proc)
 {
+	print_name();
+}
+
+void cm0_B_T2(struct cm0 *proc)
+{
+	print_name();
+}
+
+/*
+ * this function has prev_instr argument which is first 16 bits of this
+ * instruction. 
+ */
+void cm0_BL(struct cm0 *proc, uint16_t prev_instr)
+{
+	print_name();
+}
+
+void cm0_LDM(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_LDR_immediate_T1(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_LDR_immediate_T2(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_LDR_literal(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_LDR_register(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_MOV_immediate(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_MOV_register_T1(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_MOV_register_T2(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_check_32bit_instr(struct cm0 *proc, uint16_t prev_instr)
+{
+	uint16_t instr;
+
+	/* this is 32 bit instruction, so PC will be incremented to get
+	 * latter 16 bits.
+	 */
+	cm0_incr_PC(proc);
+	instr = cm0_get_instr(proc);
+
+	if ((instr & 0b1100000000000000) == 0b1100000000000000)
+		cm0_BL(proc, prev_instr);
+}
+
+int cm0_decode_instruction(struct cm0 *proc)
+{
+	uint16_t instr = cm0_get_instr(proc);
 
 	if ((instr & 0b1111100000000000) == 0b1010100000000000)
 		cm0_ADD_SP_plus_immediate_T1(proc);
@@ -257,6 +331,39 @@ int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 	else if ((instr & 0b1111111111000000) == 0b0100000100000000)
 		cm0_ASR_register(proc);
 
+	else if ((instr & 0b1111000000000000) == 0b1101000000000000)
+		cm0_B_T1(proc);
+
+	else if ((instr & 0b1111100000000000) == 0b1110000000000000)
+		cm0_B_T2(proc);
+
+	else if ((instr & 0b1111100000000000) == 0b1111000000000000)
+		 cm0_check_32bit_instr(proc, instr);
+
+	else if	((instr & 0b1111100000000000) == 0b1100100000000000)
+		cm0_LDM(proc);
+	
+	else if ((instr & 0b1111100000000000) == 0b0110100000000000)
+		cm0_LDR_immediate_T1(proc);
+
+	else if ((instr & 0b1111100000000000) == 0b1001100000000000)
+		cm0_LDR_immediate_T2(proc);
+
+	else if ((instr & 0b1111100000000000) == 0b0100100000000000)
+		cm0_LDR_literal(proc);		
+	
+	else if ((instr & 0b1111111000000000) == 0b0101100000000000)
+		cm0_LDR_register(proc);
+
+	else if ((instr & 0b1111100000000000) == 0b0010000000000000)
+		cm0_MOV_immediate(proc);
+
+	else if ((instr & 0b1111111100000000) == 0b0100011000000000)
+		cm0_MOV_register_T1(proc);
+
+	else if ((instr & 0b1111111111000000) == 0b0000000000000000)
+		cm0_MOV_register_T2(proc);
+
 	else 
 		printf("%s got instruction %04x, which is not understandable."
 		"\n", __func__, instr);
@@ -266,12 +373,10 @@ int cm0_decode_instruction(struct cm0 *proc, uint16_t instr)
 
 int cm0_run(struct cm0 *proc)
 {
-	uint16_t instr;
 	int ret;
 	do {
-		instr = cm0_get_instr(proc);
+		cm0_decode_instruction(proc);
 		ret = cm0_incr_PC(proc);
-		cm0_decode_instruction(proc, instr);
 	} while (!ret);
 	return 0;
 }

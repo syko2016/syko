@@ -7,8 +7,8 @@
 #include <string.h>
 #include <errno.h>
 
-#define CM0_MEMC_SIZE 1024
-#define CM0_MEMD_SIZE 1024
+#define CM0_MEMC_SIZE 4096
+#define CM0_MEMD_SIZE 4096
 
 enum cm0_reg_name {
 	R0 = 0,
@@ -161,7 +161,7 @@ void cm0_ANDS(struct cm0 *proc);
 void cm0_ASRS(struct cm0 *proc);
 void cm0_B(struct cm0 *proc);
 void cm0_MOV(struct cm0 *proc);
-void cm0_BL(struct cm0 *proc);
+void cm0_BL(struct cm0 *proc, uint16_t instr);
 void cm0_REV(struct cm0 *proc);
 
 #endif
