@@ -10,6 +10,8 @@
 #define CM0_MEMC_SIZE 4096
 #define CM0_MEMD_SIZE 4096
 
+#define print_name()	printf("%s\n", __func__);
+
 enum cm0_reg_name {
 	R0 = 0,
 	R1 = 1,
@@ -152,16 +154,4 @@ int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address);
 int cm0_run(struct cm0 *proc);
 int cm0_incr_PC(struct cm0 *proc);
 uint16_t cm0_get_instr(struct cm0 *proc);
-
-void cm0_LDR(struct cm0 *proc);
-void cm0_STR(struct cm0 *proc);
-void cm0_LDM(struct cm0 *proc);
-void cm0_ADD(struct cm0 *proc);
-void cm0_ANDS(struct cm0 *proc);
-void cm0_ASRS(struct cm0 *proc);
-void cm0_B(struct cm0 *proc);
-void cm0_MOV(struct cm0 *proc);
-void cm0_BL(struct cm0 *proc, uint16_t instr);
-void cm0_REV(struct cm0 *proc);
-
 #endif

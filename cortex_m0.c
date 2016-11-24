@@ -1,6 +1,12 @@
 #include "cortex_m0.h"
 
-#define print_name()	printf("%s\n", __func__);
+#include "ADD.h"
+#include "ASR.h"
+#include "B.h"
+#include "LDR.h"
+#include "MOV.h"
+#include "OTHER_INSTR.h"
+#include "STR.h"
 
 static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc, 
 					 enum cm0_reg_name reg)
@@ -164,140 +170,6 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 	instr |= proc->memc[pc + 1] << 8;
 
 	return instr;
-}
-
-void cm0_ADD_immediate_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_immediate_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_register_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_register_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_SP_plus_immediate_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_SP_plus_immediate_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_SP_plus_register_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ADD_SP_plus_register_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ANDS(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ASR_immediate(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_ASR_register(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_B_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_B_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-/*
- * this function has prev_instr argument which is first 16 bits of this
- * instruction. 
- */
-void cm0_BL(struct cm0 *proc, uint16_t prev_instr)
-{
-	print_name();
-}
-
-void cm0_LDM(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_LDR_immediate_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_LDR_immediate_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_LDR_literal(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_LDR_register(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_MOV_immediate(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_MOV_register_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_MOV_register_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_REV(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_STR_immediate_T1(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_STR_immediate_T2(struct cm0 *proc)
-{
-	print_name();
-}
-
-void cm0_STR_register(struct cm0 *proc)
-{
-	print_name();
 }
 
 void cm0_check_32bit_instr(struct cm0 *proc, uint16_t prev_instr)
