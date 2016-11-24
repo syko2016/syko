@@ -47,11 +47,13 @@ void error(char *fun_name)
 	exit(1);
 }
 
-int main(void)
+int main(int argc, char *argv[])
 { 
 	int rt;
 	uint8_t buf_memd[CM0_MEMD_SIZE]; /* temp buf */
 	uint8_t buf_memc[CM0_MEMC_SIZE]; /* temp buf */
+	uint32_t buf_regs[19];
+
 	struct cm0 proc;
 
 	rt = load(buf_memd, CM0_MEMD_SIZE, "file_data_in.bin");
@@ -61,6 +63,12 @@ int main(void)
 	rt = load(buf_memc, CM0_MEMC_SIZE, "file_code.bin");
 	if (rt < 0)
 		error("load");
+
+	if (argc != 1) {
+		rt = load((uint8_t *)buf_regs, sizeof(buf_regs), "input_regs.bin");
+		if (rt < 0)
+			error("load");
+	}
 	
 	rt = cm0_set_memc(&proc, buf_memc, CM0_MEMC_SIZE, 0);
 	if (rt < 0)
@@ -70,11 +78,22 @@ int main(void)
 	if (rt < 0)
 		error("cm0_set_memd");
 
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs");
+
 	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs");
 
 	rt = save(cm0_get_memd(&proc), CM0_MEMD_SIZE, "file_data_out.bin");
 	if (rt < 0)
 		error("save");
-	
+
+	if (argc != 1)
+		rt = save((uint8_t *)buf_regs, sizeof(buf_regs), "output_regs.bin");	
+
 	return 0;
 } 

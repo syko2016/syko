@@ -151,6 +151,23 @@ int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address);
  * and returns 0 on exit.
  */
 int cm0_run(struct cm0 *proc);
+
+/*
+ * TODO comments
+ */
 int cm0_incr_PC(struct cm0 *proc);
 uint16_t cm0_get_instr(struct cm0 *proc);
+
+/** @brief Register setter function.
+ * This function sets all registers before any work is done.
+ * It may be used for testing purposes.
+ */
+int cm0_set_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size);
+
+/** @brief Register getter function.
+ * This function gets all registers after work is done.
+ * It may be used for testing purposes.
+ */
+int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size);
+
 #endif

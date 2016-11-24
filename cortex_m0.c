@@ -104,6 +104,37 @@ int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off)
 	return 0;
 }
 
+int cm0_set_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size)
+{
+	if (buf_size < 19 * sizeof(uint32_t)) {
+		errno = ENOMEM;
+		return -ENOMEM;
+	}		
+
+	for (int i = 0; i < 19; i++)
+		cm0_set_reg(proc, i, buf[i]);
+
+	if ((proc->regs.CONTROL & (1 << 1)) == 1) {
+		proc->regs.PSP = buf[13];
+		proc->regs.MSP = 0;
+	}
+
+	return 0;
+}
+
+int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size)
+{
+	if (buf_size < 19 * sizeof(uint32_t)) {
+		errno = ENOMEM;
+		return -ENOMEM;
+	}
+	
+	for (int i = 0; i < 19; i++)
+		buf[i] = cm0_get_reg(proc, i);
+
+	return 0;
+}
+
 const uint8_t *cm0_get_memd(struct cm0 *proc)
 {	
 	return proc->memd;
