@@ -26,13 +26,12 @@ enum cm0_reg_name {
 	R10 = 10,
 	R11 = 11,
 	R12 = 12,
-	MSP = 13,
-	PSP = 14,
-	LR = 15,
-	PC = 16,
-	PSR = 17,
-	PRIMASK = 18,
-	CONTROL = 19
+	SP = 13,
+	LR = 14,
+	PC = 15,
+	PSR = 16,
+	PRIMASK = 17,
+	CONTROL = 18
 };
 
 struct cm0_registers {

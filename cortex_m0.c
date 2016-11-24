@@ -38,11 +38,12 @@ static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc,
 		return &proc->regs.R11;
 	case R12:
 		return &proc->regs.R12;
-	/* TODO: SP, and MSP/PSP problem */
-	case MSP:
-		return &proc->regs.MSP;	
-	case PSP:
-		return &proc->regs.PSP;
+	/* There are 2 stacks on M0. */
+	case SP:
+		if (proc->regs.CONTROL & (1 << 1) == 0) 
+			return &proc->regs.MSP;	
+		else
+			return &proc->regs.PSP;
 	case LR:
 		return &proc->regs.LR;
 	case PC:
@@ -62,6 +63,8 @@ static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc,
 void cm0_reset(struct cm0 *proc)
 {
 	/* TODO */
+	cm0_set_reg(proc, PRIMASK, 0);
+	cm0_set_reg(proc, CONTROL, 0);
 }
 
 void cm0_set_reg(struct cm0 *proc, enum cm0_reg_name reg, uint32_t val)
