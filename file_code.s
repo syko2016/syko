@@ -12,13 +12,13 @@ main:
 	add 	SP, SP, #16
 	add	r0, SP, r0
 	add	SP, r12
-	and	r1 ,r1	//it is compiled to ands by default!
+	and	r1 ,r1
 	asr	r0, r1, #31
 	asr	r0, r0, r2
 	bmi	64	//for condition list look to the page 99 of ARMv6-M
 			//architecture reference.
 
-	b	1024	//without condition b always jumps
+	b	1024
 	bl	512
 	ldm	r0!, {r1, r2, r3}
 	ldr	r0, [r1, #+16]
@@ -26,4 +26,8 @@ main:
 	ldr	r0, [PC, #128]
 	ldr	r0, [r1, r2]
 	mov	r0, #128
-	mov	r9, r10
+	//movs	r1, r0 <- this does not trigger MOV (register) encoding T2!
+	rev r0, r1
+	str r0, [r1, #8]
+	str r0, [SP, #128]
+	str r0, [r2, r4]

@@ -280,6 +280,26 @@ void cm0_MOV_register_T2(struct cm0 *proc)
 	print_name();
 }
 
+void cm0_REV(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_STR_immediate_T1(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_STR_immediate_T2(struct cm0 *proc)
+{
+	print_name();
+}
+
+void cm0_STR_register(struct cm0 *proc)
+{
+	print_name();
+}
+
 void cm0_check_32bit_instr(struct cm0 *proc, uint16_t prev_instr)
 {
 	uint16_t instr;
@@ -364,6 +384,18 @@ int cm0_decode_instruction(struct cm0 *proc)
 	else if ((instr & 0b1111111111000000) == 0b0000000000000000)
 		cm0_MOV_register_T2(proc);
 
+	else if ((instr & 0b1111111111000000) == 0b1011101000000000)
+		cm0_REV(proc);
+	
+	else if ((instr & 0b1111100000000000) == 0b0110000000000000)
+		cm0_STR_immediate_T1(proc);
+	
+	else if ((instr & 0b1111100000000000) == 0b1001000000000000)
+		cm0_STR_immediate_T2(proc);
+	
+	else if ((instr & 0b1111111000000000) == 0b0101000000000000)
+		cm0_STR_register(proc);
+	
 	else 
 		printf("%s got instruction %04x, which is not understandable."
 		"\n", __func__, instr);
