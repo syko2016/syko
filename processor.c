@@ -50,8 +50,8 @@ void error(char *fun_name)
 int main(int argc, char *argv[])
 { 
 	int rt;
-	uint8_t buf_memd[CM0_MEMD_SIZE]; /* temp buf */
-	uint8_t buf_memc[CM0_MEMC_SIZE]; /* temp buf */
+	uint8_t buf_memd[CM0_MEMD_SIZE];
+	uint8_t buf_memc[CM0_MEMC_SIZE];
 	uint32_t buf_regs[19];
 
 	struct cm0 proc;
@@ -65,9 +65,14 @@ int main(int argc, char *argv[])
 		error("load");
 
 	if (argc != 1) {
-		rt = load((uint8_t *)buf_regs, sizeof(buf_regs), "input_regs.bin");
+		rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+			  "input_regs.bin");
 		if (rt < 0)
 			error("load");
+
+		rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+		if (rt < 0)
+			error("cm0_set_all_regs");
 	}
 	
 	rt = cm0_set_memc(&proc, buf_memc, CM0_MEMC_SIZE, 0);
@@ -78,22 +83,22 @@ int main(int argc, char *argv[])
 	if (rt < 0)
 		error("cm0_set_memd");
 
-	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
-	if (rt < 0)
-		error("cm0_set_all_regs");
-
 	cm0_run(&proc);
-
-	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
-	if (rt < 0)
-		error("cm0_get_all_regs");
 
 	rt = save(cm0_get_memd(&proc), CM0_MEMD_SIZE, "file_data_out.bin");
 	if (rt < 0)
 		error("save");
 
-	if (argc != 1)
-		rt = save((uint8_t *)buf_regs, sizeof(buf_regs), "output_regs.bin");	
+	if (argc != 1) {
+		rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+		if (rt < 0)
+			error("cm0_get_all_regs");
+
+		rt = save((uint8_t *)buf_regs, sizeof(buf_regs), 
+			  "output_regs.bin");
+		if (rt < 0)
+			error("save");	
+	}
 
 	return 0;
 } 

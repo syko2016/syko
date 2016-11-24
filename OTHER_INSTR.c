@@ -23,17 +23,10 @@ void cm0_ANDS(struct cm0 *proc)
 	op1 = cm0_get_reg(proc, Rdn);
 	op2 = cm0_get_reg(proc, Rm);
 
-	/* TEMPORARY ASSERTS FOR TEST PURPOSES! */
-	assert(op1 == 2);
-	assert(op2 == 3);
-
 	result = op1 * op2;
 
 	/* Write result into the destination register */
  	cm0_set_reg(proc, Rdn, result);	
-
-	/* TEMPORARY ASSERT FOR TEST PURPOSES! */
-	assert(cm0_get_reg(proc, R0) == 6);
 }
 
 /*
