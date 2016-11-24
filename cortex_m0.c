@@ -40,7 +40,7 @@ static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc,
 		return &proc->regs.R12;
 	/* There are 2 stacks on M0. */
 	case SP:
-		if (proc->regs.CONTROL & (1 << 1) == 0) 
+		if ((proc->regs.CONTROL & (1 << 1)) == 0) 
 			return &proc->regs.MSP;	
 		else
 			return &proc->regs.PSP;
