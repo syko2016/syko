@@ -34,6 +34,18 @@ enum cm0_reg_name {
 	CONTROL = 18
 };
 
+/* 
+ * Enums for PSR register.
+ * It starts with value 31 and ends with 28 to represent bit offset in APSR.
+ * Full description of APSR reg. and flags is on page A2-38.
+ */
+enum cm0_flags {
+	V = 28, /* Overflow condition code flag */
+	C = 29, /* Carry condition code flag    */
+	Z = 30, /* Zero condition code flag     */
+	N = 31  /* Negative condition code flag */
+};
+
 struct cm0_registers {
 	uint32_t R0;
 	uint32_t R1;
@@ -169,5 +181,11 @@ int cm0_set_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size);
  * It may be used for testing purposes.
  */
 int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size);
+
+/** @brief Flag setter function. 
+ * value - must be 0 or 1. If it is not - negative value (-EINVAL) is returned.
+ * On success 0 is returned.
+ */
+int cm0_set_flag(struct cm0 *proc, enum cm0_flags flag, uint8_t value);  
 
 #endif

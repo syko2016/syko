@@ -318,3 +318,23 @@ int cm0_run(struct cm0 *proc)
 	} while (!ret);
 	return 0;
 }
+
+int cm0_set_flag(struct cm0 *proc, enum cm0_flags flag, uint8_t value)
+{
+	uint32_t PSR_r = cm0_get_reg(proc, PSR);
+
+	/* Wrong flag value test */
+	if (value != 1 && value != 0) {
+		errno = EINVAL;
+		return -EINVAL;
+	}	
+
+	/* Clearing flag */
+	PSR_r &= ~(1 << flag);	
+	/* Setting flag */
+	PSR_r |= (value << flag);
+
+	cm0_set_reg(proc, PSR, PSR_r);
+
+	return 0;
+}

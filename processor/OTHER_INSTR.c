@@ -3,8 +3,6 @@
 void cm0_ANDS(struct cm0 *proc)
 {
 	/* page A6-116 of ARM DDI 0419C ID092410 */
-
-	/* TODO: FLAGS! */
 	uint16_t instr;
 	uint8_t Rm;
 	uint8_t Rdn;
@@ -15,7 +13,7 @@ void cm0_ANDS(struct cm0 *proc)
 	
 	/* Get register which contains the first operand. */
 	Rdn = instr & 0b0000000000000111;
-	
+
 	/*Get register which contains the second operand. */
 	Rm = (instr & 0b0000000000111000) >> 3;
 
@@ -23,10 +21,24 @@ void cm0_ANDS(struct cm0 *proc)
 	op1 = cm0_get_reg(proc, Rdn);
 	op2 = cm0_get_reg(proc, Rm);
 
-	result = op1 * op2;
+	result = op1 & op2;
 
 	/* Write result into the destination register */
  	cm0_set_reg(proc, Rdn, result);	
+
+	/* Update flags */
+
+	/* 
+	 * Update negative value flag. If MSB is set to 1, value is negative. 
+	 * Operator !! used to get 1 or 0 from value.
+	 */
+	cm0_set_flag(proc, N, !!(result & (1 << 31)));
+	/*
+	 * Update zero flag.
+	 * Set flag to 1 if result equals to zero.
+	 */
+	cm0_set_flag(proc, Z, !result);
+	/* Flags V and C not changed. */	
 }
 
 /*
