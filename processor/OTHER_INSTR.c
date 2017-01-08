@@ -101,7 +101,38 @@ void cm0_BL(struct cm0 *proc, const uint16_t prev_instr)
 
 void cm0_LDM(struct cm0 *proc)
 {
-	print_name();
+	uint8_t Rn, wback;
+	uint16_t registers;
+	uint32_t address;
+	uint32_t value;
+	const uint8_t *base_addr = cm0_get_memd(proc);
+	const uint32_t instr = cm0_get_instr(proc);
+	
+	Rn = (instr & 0b0000011100000000) >> 8;
+	registers = instr & 0xFF;
+	wback = !(registers & (1 << Rn));
+	address = cm0_get_reg(proc, Rn);
+
+	/* 
+	 * Conversion needed due to use of pointer arithmetic. 
+	 * Cortex-M0 is little endian, x86-64 (PC) big endian. 
+	 */
+	address = le32toh(address);
+
+	if (!registers) { 
+		assert(0);
+		return; /* UNPREDICTABLE */
+	}
+
+	for (int i = 0; i < 8; i++) {
+		if (registers & (1 << i)) {
+			value = *(uint32_t *)(base_addr + address);
+			cm0_set_reg(proc, i, value);
+			address += 4;
+		}
+	}
+	if (wback) 
+		cm0_set_reg(proc, Rn, address);
 }
 
 void cm0_REV(struct cm0 *proc)
