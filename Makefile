@@ -6,6 +6,7 @@ include $(SRC_DIR)/processor/make.config
 include $(SRC_DIR)/test_cases/ANDS/make.config
 include $(SRC_DIR)/test_cases/BL/make.config
 include $(SRC_DIR)/test_cases/LDM/make.config
+include $(SRC_DIR)/test_cases/REV/make.config
 PROC_OBJ := $(patsubst %, $(SRC_DIR)/processor/%,$(_PROC_OBJ))
 ANDS_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ANDS/%,$(_ANDS_OBJ))
 ANDS_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ANDS/%,$(_ANDS_ASM))
@@ -13,8 +14,10 @@ BL_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/BL/%,$(_BL_OBJ))
 BL_ASM := $(patsubst %, $(SRC_DIR)/test_cases/BL/%,$(_BL_ASM))
 LDM_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/LDM/%,$(_LDM_OBJ))
 LDM_ASM := $(patsubst %, $(SRC_DIR)/test_cases/LDM/%,$(_LDM_ASM))
+REV_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/REV/%,$(_REV_OBJ))
+REV_ASM := $(patsubst %, $(SRC_DIR)/test_cases/REV/%,$(_REV_ASM))
 
-all : ands_test bl_test ldm_test
+all : ands_test bl_test ldm_test rev_test
 
 ands_test : $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(ANDS_OBJ) -o ./test_cases/ANDS/$@
@@ -24,6 +27,9 @@ bl_test : $(PROC_OBJ) $(BL_ASM) $(BL_OBJ)
 
 ldm_test : $(PROC_OBJ) $(LDM_ASM) $(LDM_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(LDM_OBJ) -o ./test_cases/LDM/$@
+
+rev_test : $(PROC_OBJ) $(REV_ASM) $(REV_OBJ)
+	gcc $(CFLAGS) $(PROC_OBJ) $(REV_OBJ) -o ./test_cases/REV/$@
 
 %.o: %.c
 	gcc $(CFLAGS) -c $< -o $@

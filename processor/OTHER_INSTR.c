@@ -137,5 +137,16 @@ void cm0_LDM(struct cm0 *proc)
 
 void cm0_REV(struct cm0 *proc)
 {
-	print_name();
+	uint8_t Rm, Rd;
+	uint32_t val, tmp, rot = 0;
+ 	const uint16_t instr = cm0_get_instr(proc);
+	
+	Rd = instr & 0b00000111;
+	Rm = (instr & 0b00111000) >> 3;
+	val = cm0_get_reg(proc, Rm);
+	for (int i = 0; i < 4; i++) {
+		tmp = (val & (0xFF << 8 * i)) >> (8 * i);
+		rot |= tmp << (8 * (3 - i));
+	}
+	cm0_set_reg(proc, Rd, rot);
 }
