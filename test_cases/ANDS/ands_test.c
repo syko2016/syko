@@ -63,7 +63,7 @@ int main(void)
 	if (rt < 0)
 		error("cm0_set_all_regs");
 	
-	rt = cm0_set_memc(&proc, buf_memc, CM0_MEMC_SIZE, 0);
+	rt = cm0_set_memc(&proc, buf_memc, CM0_MEMC_SIZE - 0x100, 0x100);
 	if (rt < 0)
 		error("cm0_set_memc");
 

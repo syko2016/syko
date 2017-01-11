@@ -7,8 +7,8 @@
 #include <string.h>
 #include <errno.h>
 
-#define CM0_MEMC_SIZE 4096
-#define CM0_MEMD_SIZE 4096
+#define CM0_MEMC_SIZE 4096UL
+#define CM0_MEMD_SIZE 4096UL
 
 #define print_name()	printf("%s\n", __func__);
 
