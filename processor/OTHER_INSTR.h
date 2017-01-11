@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <endian.h>
 #include "cortex_m0.h"
+#include "initblock.h"
 
 void cm0_ANDS(struct cm0 *proc);
 void cm0_BL(struct cm0 *proc, const uint16_t prev_instr);

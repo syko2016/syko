@@ -106,7 +106,7 @@ int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 	return 0;
 }
 
-int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
+/*int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 {
 	if (buf_size + CM0_MEMD_OFFSET > CM0_MEMD_SIZE) {
 		errno = ENOMEM;
@@ -115,6 +115,11 @@ int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 
 	memcpy(buf, proc->memd + CM0_MEMD_OFFSET, buf_size);
 	return 0;
+}*/
+
+const uint8_t *cm0_get_memd(struct cm0 *proc)
+{
+	return proc->memd;
 }
 
 int cm0_set_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size)
@@ -146,11 +151,6 @@ int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size)
 		buf[i] = cm0_get_reg(proc, i);
 
 	return 0;
-}
-
-const uint8_t *cm0_get_memd(struct cm0 *proc)
-{	
-	return proc->memd;
 }
 
 /* not tested. */
@@ -212,7 +212,6 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 
 	pc = cm0_get_reg(proc, PC);
 	
-	/* Little endian to big endian conversion */
 	instr = (uint16_t)proc->memc[pc];
 	instr |= proc->memc[pc + 1] << 8;
 
@@ -350,6 +349,12 @@ int cm0_set_flag(struct cm0 *proc, enum cm0_flags flag, uint8_t value)
 	cm0_set_reg(proc, PSR, PSR_r);
 
 	return 0;
+}
+
+uint8_t cm0_get_flag(struct cm0 *proc, enum cm0_flags flag)
+{
+	uint32_t PSR_r = cm0_get_reg(proc, PSR);
+	return ((PSR_r & (1 << flag)) >> flag);
 }
 
 int cm0_init(struct cm0 *proc)

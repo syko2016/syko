@@ -2,6 +2,7 @@
 #define _ASR_H_
 
 #include "cortex_m0.h"
+#include "initblock.h"
 
 void cm0_ASR_immediate(struct cm0 *proc);
 void cm0_ASR_register(struct cm0 *proc);

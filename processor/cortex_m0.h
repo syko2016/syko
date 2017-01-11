@@ -125,12 +125,7 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size);
  * On failure errno is set accordingly to the return value.
  */
 int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size);
-int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size);
 
-/** @brief: Memory data getter.
- *
- * This function returns value to the data memory. 
- */
 const uint8_t *cm0_get_memd(struct cm0 *proc);
 
 /** @brief: Byte setter function.
@@ -201,5 +196,7 @@ int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size);
  * On success 0 is returned.
  */
 int cm0_set_flag(struct cm0 *proc, enum cm0_flags flag, uint8_t value);  
+
+uint8_t cm0_get_flag(struct cm0 *proc, enum cm0_flags flag);
 
 #endif

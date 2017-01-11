@@ -1,19 +1,5 @@
 #include "OTHER_INSTR.h"
 
-
-/* 
- * This functions return 0, because ARMv6-M (which Cortex-M0 uses) does not 
- * support IT instruction. It was written, because instruction encondings have
- * some condition checks. 
- */ 
-static uint8_t InITBlock(void) {
-	return 0;
-}
-
-static uint8_t LastInITBlock(void) {
-	return 0;
-}
-
 void cm0_ANDS(struct cm0 *proc)
 {
 	/* page A6-116 of ARM DDI 0419C ID092410 */
@@ -112,12 +98,6 @@ void cm0_LDM(struct cm0 *proc)
 	registers = instr & 0xFF;
 	wback = !(registers & (1 << Rn));
 	address = cm0_get_reg(proc, Rn);
-
-	/* 
-	 * Conversion needed due to use of pointer arithmetic. 
-	 * Cortex-M0 is little endian, x86-64 (PC) big endian. 
-	 */
-	address = le32toh(address);
 
 	if (!registers) { 
 		assert(0);
