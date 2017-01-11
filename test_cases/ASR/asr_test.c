@@ -66,7 +66,7 @@ int main(void)
 	rt = cm0_init(&proc);
 	if (rt < 0)
 		error("cm0_init", &proc);
-	printf("###Test 1###\nasr r0, r1, #4, r1 == 16\n");
+	printf("###Test 1###\nasr r0, r1, #4; r0 == 0, r1 == 16\n");
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_1.bin");
 	if (rt < 0)
 		error("load", &proc);
@@ -97,7 +97,7 @@ int main(void)
 
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
 
-	printf("\n###Test 2###\nasr r0, r1, #0, r1 == 0xF0F0F0F0\n");
+	printf("\n###Test 2###\nasr r0, r1, #0; r0 == 0, r1 == 0xF0F0F0F0\n");
 
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_2.bin");
 	if (rt < 0)
@@ -110,6 +110,70 @@ int main(void)
 
 	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
 		  "result_regs_2.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	printf("\n###Test 3###\nasr r0, r0, r1; r0 == 16, r1 == 4\n");
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	printf("\n###Test 4###\nasr r0, r0, r1; r0 == 0xF0F0F0F0, r1 == 2\n");
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_4.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_4.bin");
 	if (rt < 0)
 		error("load", &proc);
 
