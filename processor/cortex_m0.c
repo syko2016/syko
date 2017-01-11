@@ -8,6 +8,12 @@
 #include "OTHER_INSTR.h"
 #include "STR.h"
 
+#define CM0_MEMC_SIZE 8192UL
+#define CM0_MEMD_SIZE 0x400000UL
+
+#define CM0_MEMC_OFFSET 0x100UL
+#define CM0_MEMD_OFFSET 0x200000UL
+
 static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc, 
 					 enum cm0_reg_name reg)
 {
@@ -83,24 +89,24 @@ uint32_t cm0_get_reg(struct cm0 *proc, enum cm0_reg_name reg)
 	return *reg_addr;
 }
 
-int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off)
+int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 {
-	if (buf_size + off > CM0_MEMC_SIZE) {
+	if (buf_size + CM0_MEMC_OFFSET > CM0_MEMC_SIZE) {
 		errno = ENOMEM;
 		return -ENOMEM;
 	}
-	memcpy(proc->memc + off, buf, buf_size);
+	memcpy(proc->memc + CM0_MEMC_OFFSET, buf, buf_size);
 	return 0;
 }
 
 /* not tested. */
-int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off)
+int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 {
-	if (buf_size + off > CM0_MEMD_SIZE) {
+	if (buf_size + CM0_MEMD_OFFSET > CM0_MEMD_SIZE) {
 		errno = ENOMEM;
 		return -ENOMEM;
 	}
-	memcpy(proc->memd + off, buf, buf_size);
+	memcpy(proc->memd + CM0_MEMD_OFFSET, buf, buf_size);
 	return 0;
 }
 
@@ -337,4 +343,33 @@ int cm0_set_flag(struct cm0 *proc, enum cm0_flags flag, uint8_t value)
 	cm0_set_reg(proc, PSR, PSR_r);
 
 	return 0;
+}
+
+int cm0_init(struct cm0 *proc)
+{
+	proc->memd = NULL;
+
+	proc->memc = calloc(1, CM0_MEMC_SIZE);
+	if (!proc->memc) {
+		errno = ENOMEM;
+		return -ENOMEM;
+	}
+	proc->memd = calloc(1, CM0_MEMD_SIZE);
+	if (!proc->memd) {
+		errno = ENOMEM;
+		free(proc->memc);
+		proc->memc = NULL;
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
+void cm0_deinit(struct cm0 *proc)
+{
+	if (proc->memd)
+		free(proc->memd);
+	
+	if (proc->memc)
+		free(proc->memc);
 }

@@ -1,14 +1,12 @@
 #ifndef _CORTEX_M0_H_
 #define _CORTEX_M0_H_
 
+#include <stdlib.h>
 #include <stdint.h> 
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-
-#define CM0_MEMC_SIZE 4096UL
-#define CM0_MEMD_SIZE 4096UL
 
 #define print_name()	printf("%s\n", __func__);
 
@@ -71,8 +69,8 @@ struct cm0_registers {
 };
 
 struct cm0 {
-	uint8_t memc[CM0_MEMC_SIZE];
-	uint8_t memd[CM0_MEMD_SIZE];
+	uint8_t *memc;
+	uint8_t *memd;
 
 	struct cm0_registers regs;
 };
@@ -83,6 +81,18 @@ struct cm0 {
  *  value.
  */
 void cm0_reset(struct cm0 *proc);
+
+
+/** @brief: initalize proc struct.
+ *
+ * This function allocates memory for internal buffers.
+ * Returns -1 and sets errno if there is some problem with memory alloc.
+ */
+int cm0_init(struct cm0 *proc);
+
+/** @brief: deinitalize proc struct.
+ */
+void cm0_deinit(struct cm0 *proc);
 
 /** @brief: Processor register value setter. */
 void cm0_set_reg(struct cm0 *proc, enum cm0_reg_name reg, uint32_t val);
@@ -100,7 +110,7 @@ uint32_t cm0_get_reg(struct cm0 *proc, enum cm0_reg_name reg);
  * -ENOMEM when there is no enough space.
  * On failure errno is set accordingly to the return value.
  */
-int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off);
+int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size);
 /** @brief: Memory data setter.
  *
  * This function copies value from buf into the data memory.
@@ -111,7 +121,7 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off);
  * -ENOMEM when there is no enough space.
  * On failure errno is set accordingly to the return value.
  */
-int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size, size_t off);
+int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size);
 
 /** @brief: Memory data getter.
  *

@@ -27,12 +27,12 @@ int load(uint8_t *buf, size_t buf_size, char *path)
 	return cnt;	
 }
 
-void error(char *fun_name)
+void error(char *fun_name, struct cm0 *proc)
 {
 	perror(fun_name);
+	cm0_deinit(proc);
 	exit(1);
 }
-
 
 void print_regs(uint32_t *buf_regs, uint32_t size, char *msg)
 {
@@ -53,7 +53,7 @@ void check_regs(uint32_t *buf_regs, uint32_t *buf_regs_org, uint32_t size)
 int main(void)
 { 
 	int rt;
-	uint8_t buf_memc[CM0_MEMC_SIZE];
+	uint8_t buf_memc[4096];
 	uint32_t buf_regs[19], buf_regs_org[19];
 
 	struct cm0 proc;
@@ -63,35 +63,41 @@ int main(void)
 		"porownuje rejestry procesora z docelowymi rejestrami z pliku\n"
 		"result_regs.bin.\n\n");
 
-	rt = load(buf_memc, CM0_MEMC_SIZE, "file_code.bin");
+	rt = cm0_init(&proc);
 	if (rt < 0)
-		error("load");
+		error("cm0_init", &proc);
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code.bin");
+	if (rt < 0)
+		error("load", &proc);
 
 	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
 		  "input_regs.bin");
 	if (rt < 0)
-		error("load");
+		error("load", &proc);
 
 	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
 		  "result_regs.bin");
 	if (rt < 0)
-		error("load");
+		error("load", &proc);
 
 	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
 	if (rt < 0)
-		error("cm0_set_all_regs");
+		error("cm0_set_all_regs", &proc);
 	
-	rt = cm0_set_memc(&proc, buf_memc, CM0_MEMC_SIZE - 0x100, 0x100);
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
 	if (rt < 0)
-		error("cm0_set_memc");
+		error("cm0_set_memc", &proc);
 
 	cm0_run(&proc);
 
 	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
 	if (rt < 0)
-		error("cm0_get_all_regs");
+		error("cm0_get_all_regs", &proc);
 
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	cm0_deinit(&proc);
 
 	return 0;
 } 
