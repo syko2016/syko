@@ -10,6 +10,9 @@
 
 #define print_name()	printf("%s\n", __func__);
 
+#define CM0_MEMC_SIZE 8192UL
+#define CM0_MEMD_SIZE 0x400000UL
+
 enum cm0_reg_name {
 	R0 = 0,
 	R1 = 1,
@@ -122,6 +125,7 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size);
  * On failure errno is set accordingly to the return value.
  */
 int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size);
+int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size);
 
 /** @brief: Memory data getter.
  *

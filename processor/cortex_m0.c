@@ -8,9 +8,6 @@
 #include "OTHER_INSTR.h"
 #include "STR.h"
 
-#define CM0_MEMC_SIZE 8192UL
-#define CM0_MEMD_SIZE 0x400000UL
-
 #define CM0_MEMC_OFFSET 0x100UL
 #define CM0_MEMD_OFFSET 0x200000UL
 
@@ -99,7 +96,6 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 	return 0;
 }
 
-/* not tested. */
 int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 {
 	if (buf_size + CM0_MEMD_OFFSET > CM0_MEMD_SIZE) {
@@ -107,6 +103,17 @@ int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 		return -ENOMEM;
 	}
 	memcpy(proc->memd + CM0_MEMD_OFFSET, buf, buf_size);
+	return 0;
+}
+
+int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
+{
+	if (buf_size + CM0_MEMD_OFFSET > CM0_MEMD_SIZE) {
+		errno = ENOMEM;
+		return -ENOMEM;
+	}
+
+	memcpy(buf, proc->memd + CM0_MEMD_OFFSET, buf_size);
 	return 0;
 }
 
