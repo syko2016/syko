@@ -8,6 +8,7 @@ include $(SRC_DIR)/test_cases/BL/make.config
 include $(SRC_DIR)/test_cases/LDM/make.config
 include $(SRC_DIR)/test_cases/REV/make.config
 include $(SRC_DIR)/test_cases/ASR/make.config
+include $(SRC_DIR)/test_cases/B/make.config
 PROC_OBJ := $(patsubst %, $(SRC_DIR)/processor/%,$(_PROC_OBJ))
 ANDS_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ANDS/%,$(_ANDS_OBJ))
 ANDS_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ANDS/%,$(_ANDS_ASM))
@@ -19,8 +20,10 @@ REV_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/REV/%,$(_REV_OBJ))
 REV_ASM := $(patsubst %, $(SRC_DIR)/test_cases/REV/%,$(_REV_ASM))
 ASR_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ASR/%,$(_ASR_OBJ))
 ASR_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ASR/%,$(_ASR_ASM))
+B_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_OBJ))
+B_ASM := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_ASM))
 
-all : ands_test bl_test ldm_test rev_test asr_test
+all : ands_test bl_test ldm_test rev_test asr_test b_test
 
 ands_test : $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(ANDS_OBJ) -o ./test_cases/ANDS/$@
@@ -36,6 +39,9 @@ rev_test : $(PROC_OBJ) $(REV_ASM) $(REV_OBJ)
 
 asr_test : $(PROC_OBJ) $(ASR_ASM) $(ASR_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(ASR_OBJ) -o ./test_cases/ASR/$@
+
+b_test : $(PROC_OBJ) $(B_ASM) $(B_OBJ)
+	gcc $(CFLAGS) $(PROC_OBJ) $(B_OBJ) -o ./test_cases/B/$@
 
 %.o: %.c
 	gcc $(CFLAGS) -c $< -o $@
