@@ -14,7 +14,8 @@ void cm0_ASR_immediate(struct cm0 *proc)
 	val = cm0_get_reg(proc, Rm);
 
 	if (imm5) {
-		result = ((((1 << imm5) - 1) * (val >> 31)) << (32 - imm5)) | (val >> imm5);
+		result = ((((1 << imm5) - 1) * (val >> 31)) << (32 - imm5)) 
+			 | (val >> imm5);
 		carry = (val >> (imm5 - 1)) & 1;
 
 	} else {
@@ -45,7 +46,8 @@ void cm0_ASR_register(struct cm0 *proc)
 	setflags = !InITBlock();
 	
 	if (shift) {
-		result = ((((1 << shift) - 1) * (val >> 31)) << (32 - shift)) | (val >> shift);
+		result = ((((1 << shift) - 1) * (val >> 31)) << (32 - shift)) 
+			 | (val >> shift);
 		carry = (val >> (shift - 1)) & 1;
 	} else {
 		result = val;

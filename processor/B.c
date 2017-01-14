@@ -34,6 +34,11 @@ void cm0_B_T1(struct cm0 *proc)
 	
 	imm32 = (0xFFFFE00 * (imm8 > 7))  | (imm8 << 1);
 	PC_r = cm0_get_reg(proc, PC);
+	
+	/* 
+	 * There should be no "+ 2", but without this addition wrong
+	 * instruction is executed.
+	 */
 	cm0_set_reg(proc, PC, PC_r + imm32 + 2);
 	return;
 }
@@ -51,5 +56,10 @@ void cm0_B_T2(struct cm0 *proc)
 		assert(0); 
 		return;	/* UNPREDICTABLE */
 	}
+
+	/* 
+	 * there should be no "+ 2", but without this addition wrong
+	 * instruction is executed.
+	 */
 	cm0_set_reg(proc, PC, PC_r + imm32 + 2);
 }
