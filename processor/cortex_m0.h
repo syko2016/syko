@@ -166,6 +166,8 @@ int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address);
  */
 int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address);
 
+int cm0_get_word(struct cm0 *proc, uint32_t *value, size_t address);
+
 /** @brief Processor run function.
  *
  *  Function fetches all instructions from program memory, executes them,

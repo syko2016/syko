@@ -106,17 +106,6 @@ int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 	return 0;
 }
 
-/*int cm0_get_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
-{
-	if (buf_size + CM0_MEMD_OFFSET > CM0_MEMD_SIZE) {
-		errno = ENOMEM;
-		return -ENOMEM;
-	}
-
-	memcpy(buf, proc->memd + CM0_MEMD_OFFSET, buf_size);
-	return 0;
-}*/
-
 const uint8_t *cm0_get_memd(struct cm0 *proc)
 {
 	return proc->memd;
@@ -188,6 +177,21 @@ int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address)
 
 	for (int i = 0; i < 4; i++) 
 		proc->memd[address + i] = value >> (8 * i);
+
+	return 0;
+}
+
+int cm0_get_word(struct cm0 *proc, uint32_t *value, size_t address)
+{
+	if (address + sizeof(uint32_t) > CM0_MEMD_SIZE) {
+		errno = ENOMEM;
+		return -ENOMEM;
+	}
+
+	*value = 0;
+
+	for (int i = 0; i < 4; i++) 
+		*value |= proc->memd[address + i] << (8 * i);
 
 	return 0;
 }
