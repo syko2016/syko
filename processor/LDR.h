@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #ifndef _LDR_H_
 #define _LDR_H_
 

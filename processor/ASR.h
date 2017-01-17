@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #ifndef _ASR_H_
 #define _ASR_H_
 

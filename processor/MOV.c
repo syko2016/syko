@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #include "MOV.h"
 
 void cm0_MOV_immediate(struct cm0 *proc)

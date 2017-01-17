@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 	.file "file_code_1.s" 
 	.text 
 	.align   2 

@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #ifndef _INITBLOCK_H_
 #define _INITBLOCK_H_
 #include <stdint.h>

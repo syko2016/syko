@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #include "OTHER_INSTR.h"
 
 void cm0_ANDS(struct cm0 *proc)

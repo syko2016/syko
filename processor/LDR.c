@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #include "LDR.h"
 
 void cm0_LDR_immediate_T1(struct cm0 *proc)

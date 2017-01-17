@@ -1,3 +1,5 @@
+/* Author: Sebastian Sowiński */
+
 #include "ADD.h"
 
 void cm0_ADD_immediate_T1(struct cm0 *proc)

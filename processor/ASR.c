@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #include "ASR.h"
 
 void cm0_ASR_immediate(struct cm0 *proc)

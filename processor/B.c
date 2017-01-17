@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #include "B.h"
 
 void cm0_B_T1(struct cm0 *proc)
@@ -8,8 +10,6 @@ void cm0_B_T1(struct cm0 *proc)
 	const uint32_t instr = cm0_get_instr(proc);
 	cond = (instr & (15 << 8)) >> 8;
 	imm8 = (instr & 0xFF);
-	
-	print_name();
 
 	if (InITBlock()) {
 		assert(0);
@@ -45,7 +45,6 @@ void cm0_B_T1(struct cm0 *proc)
 
 void cm0_B_T2(struct cm0 *proc)
 {
-	print_name();
 	int32_t imm32;
 	const int32_t PC_r = cm0_get_reg(proc, PC);
 	const int32_t instr = cm0_get_instr(proc);

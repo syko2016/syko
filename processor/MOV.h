@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #ifndef _MOV_H_
 #define _MOV_H_
 

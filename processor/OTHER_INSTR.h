@@ -1,3 +1,5 @@
+/* Author: Konrad Gotfryd */
+
 #ifndef _OTHER_INSTR_H_
 #define _OTHER_INSTR_H_
 

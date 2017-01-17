@@ -1,3 +1,5 @@
+# Author: Konrad Gotfryd
+
 CFLAGS += -O0 -g3 -Wall -Wextra -std=gnu99 -I./processor/
 .PHONY: all clean
 
