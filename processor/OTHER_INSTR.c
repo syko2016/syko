@@ -50,10 +50,10 @@ void cm0_BL(struct cm0 *proc, const uint16_t prev_instr)
 /* page A6-123 of ARM DDI 0419C ID092410 */
 	uint32_t next_instr_addr;
 	uint8_t S, I1, I2, J1, J2;
-	uint16_t imm10, imm11;
+	int16_t imm10, imm11;
 	int32_t temp;
 	const uint16_t instr = cm0_get_instr(proc); 
-	const uint32_t PC_r = cm0_get_reg(proc, PC);
+	const int32_t PC_r = cm0_get_reg(proc, PC);
 
 	/*Get operands.*/
 	S = !!(prev_instr & (1 << 10));
@@ -82,7 +82,7 @@ void cm0_BL(struct cm0 *proc, const uint16_t prev_instr)
 	
 	cm0_set_reg(proc, LR, next_instr_addr);
 	
-	cm0_set_reg(proc, PC, (int32_t)PC_r + temp);	
+	cm0_set_reg(proc, PC, PC_r + temp);	
 }
 
 void cm0_LDM(struct cm0 *proc)

@@ -2,9 +2,9 @@
 
 void cm0_B_T1(struct cm0 *proc)
 {
-	uint8_t cond, imm8;
-	uint32_t imm32;
-	uint32_t PC_r;
+	int8_t cond, imm8;
+	int32_t imm32;
+	int32_t PC_r;
 	const uint32_t instr = cm0_get_instr(proc);
 	cond = (instr & (15 << 8)) >> 8;
 	imm8 = (instr & 0xFF);
@@ -46,9 +46,9 @@ void cm0_B_T1(struct cm0 *proc)
 void cm0_B_T2(struct cm0 *proc)
 {
 	print_name();
-	uint32_t imm32;
-	const PC_r = cm0_get_reg(proc, PC);
-	const uint32_t instr = cm0_get_instr(proc);
+	int32_t imm32;
+	const int32_t PC_r = cm0_get_reg(proc, PC);
+	const int32_t instr = cm0_get_instr(proc);
 	imm32 = instr & 2047;
 	imm32 = (0xFFFFF000 * (imm32 > 10)) | (imm32 << 1);
 

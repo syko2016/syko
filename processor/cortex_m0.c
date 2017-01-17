@@ -202,7 +202,10 @@ int cm0_incr_PC(struct cm0 *proc)
 	pc += 2;
 	
 	/* End of code detection */
-	if ((proc->memc[pc] | proc->memc[pc + 1]) == 0)
+	if ((proc->memc[pc - 2] | proc->memc[pc - 2 + 1]) == 0)
+		return -1;
+
+	else if (pc >= CM0_MEMC_SIZE)
 		return -1;
 
 	cm0_set_reg(proc, PC, pc);	
@@ -215,7 +218,7 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 	uint32_t pc;
 
 	pc = cm0_get_reg(proc, PC);
-	
+	pc -= 2;
 	instr = (uint16_t)proc->memc[pc];
 	instr |= proc->memc[pc + 1] << 8;
 
@@ -329,8 +332,11 @@ int cm0_run(struct cm0 *proc)
 {
 	int ret;
 	do {
-		cm0_decode_instruction(proc);
 		ret = cm0_incr_PC(proc);
+		if (ret)
+			break;
+
+		cm0_decode_instruction(proc);
 	} while (!ret);
 	return 0;
 }
