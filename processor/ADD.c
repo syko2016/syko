@@ -8,14 +8,14 @@ void cm0_ADD_immediate_T1(struct cm0 *proc)
 	int32_t op1, result;
 	int8_t imm3;
 
-	instr = cm0_get_instr(proc;);
+	instr = cm0_get_instr(proc);
 	Rd = instr & 0b0000000000000111;
 	Rn = (instr & 0b0000000000111000) >> 3;
 	imm3 = (instr & 0b0000000111000000) >> 6;
 
 	op1 = cm0_get_reg(proc, Rn);
 	result = op1 + imm3;
-	cm0_set_reg(proc, Rd);
+	cm0_set_reg(proc, Rd, result);
 }
 
 void cm0_ADD_immediate_T2(struct cm0 *proc)
@@ -117,7 +117,7 @@ void cm0_ADD_SP_plus_register_T2(struct cm0 *proc)
 	instr = cm0_get_instr(proc);
 	Rm = instr & 0b0000000000111000;
 	op = cm0_get_reg(proc, Rm);
-	sp = cm0_get_reg(proc, Sp);
+	sp = cm0_get_reg(proc, SP);
 	result = sp + op;
 	cm0_set_reg(proc, SP, result);
 }
