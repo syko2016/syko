@@ -1,5 +1,3 @@
-/* Author: Konrad Gotfryd */
-
 #ifndef _CORTEX_M0_H_
 #define _CORTEX_M0_H_
 

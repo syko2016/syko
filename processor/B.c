@@ -1,5 +1,3 @@
-/* Author: Konrad Gotfryd */
-
 #include "B.h"
 
 void cm0_B_T1(struct cm0 *proc)

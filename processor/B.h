@@ -1,5 +1,3 @@
-/* Author: Konrad Gotfryd */
-
 #ifndef B_H_
 #define B_H_
 

@@ -1,5 +1,3 @@
-/* Author: Konrad Gotfryd */
-
 #include "cortex_m0.h"
 
 #include "ADD.h"
