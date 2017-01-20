@@ -89,6 +89,11 @@ int main(void)
 	if (rt < 0)
 		error("cm0_set_memc", &proc);
 
+	printf("Sprawdzanie instrukcji bl.\n");
+	printf("bl test3\nand r0, r1 (powinna sie nie wykonac)\ntest: and r2, r3\n");
+	printf("r0 = 0xFFFFFFFF, r1 = 0x0F0F0F0F, r2 = 0xF0F0F0F0, r3 = 0x11111111\n"); 
+	printf("Rejestr LR powinien miec wartosc 0x0105.\n\n");
+
 	cm0_run(&proc);
 
 	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));

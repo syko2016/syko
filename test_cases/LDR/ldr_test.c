@@ -178,10 +178,8 @@ int main(void)
 	if (rt < 0)
 		error("cm0_set_memd", &proc);
 
-	proc.memd[128 + 0x100] = 0x12;
-	proc.memd[129 + 0x100] = 0x34;
-	proc.memd[130 + 0x100] = 0x56;
-	proc.memd[131 + 0x100] = 0x78;
+	cm0_set_word(&proc, 0x78563412, 128 + 0x100); 	
+
 	cm0_run(&proc);
 
 	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));

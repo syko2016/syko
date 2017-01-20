@@ -91,7 +91,7 @@ void cm0_LDM(struct cm0 *proc)
 	uint16_t registers;
 	uint32_t address;
 	uint32_t value;
-	const uint8_t *base_addr = cm0_get_memd(proc);
+
 	const uint32_t instr = cm0_get_instr(proc);
 	
 	Rn = (instr & 0b0000011100000000) >> 8;
@@ -106,7 +106,7 @@ void cm0_LDM(struct cm0 *proc)
 
 	for (int i = 0; i < 8; i++) {
 		if (registers & (1 << i)) {
-			value = *(uint32_t *)(base_addr + address);
+			cm0_get_word(proc, &value, address);
 			cm0_set_reg(proc, i, value);
 			address += 4;
 		}

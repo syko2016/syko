@@ -11,7 +11,7 @@
 #define print_name()	printf("%s\n", __func__);
 
 #define CM0_MEMC_SIZE 8192UL
-#define CM0_MEMD_SIZE 0x400000UL
+#define CM0_MEMD_SIZE 8192UL
 
 enum cm0_reg_name {
 	R0 = 0,
@@ -71,10 +71,26 @@ struct cm0_registers {
 	uint32_t CONTROL;
 };
 
-struct cm0 {
+/** @brief cortex M0 memory struct
+ * 
+ * Although cortex M0 has Von Neumann architecture, this struct contains
+ * pointers for code and data memory, due to the created API.
+ */
+struct cm0_mem {
 	uint8_t *memc;
 	uint8_t *memd;
+};
 
+/** @brief: Memory map function.
+ *
+ * This function translate offset in memory map to real memory used by this
+ * application. I.e. to get memc from struct cm0_mem, call 
+ * cm0_mem_get(&cm0_mem, CM0_MEMD_OFFSET);
+ */ 
+uint8_t *cm0_mem_get(const struct cm0_mem *mem, size_t offset);
+
+struct cm0 {
+	struct cm0_mem mem;
 	struct cm0_registers regs;
 };
 /** @brief: Processor internal reset.

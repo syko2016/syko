@@ -48,6 +48,7 @@ void check_regs(uint32_t *buf_regs, uint32_t *buf_regs_org, uint32_t size)
 		assert(buf_regs[i] == buf_regs_org[i]);
 		printf("reg %u ok.\n", i);
 	}
+	printf("\n");
 }
 
 int main(void)
@@ -67,7 +68,9 @@ int main(void)
 	if (rt < 0)
 		error("cm0_init", &proc);
 
-	printf("Sprawdzanie instrukcji bmi (wywola kodowanie T1).\n\n");
+	printf("Sprawdzanie instrukcji bmi (kodowanie T1).\n");
+	printf("bmi test\nand r0, r1 (powinna sie nie wykonac)\ntest: and r2, r3.\n");
+	printf("r0 = 0xFFFFFFFF, r1 = 0x0F0F0F0F, r2 = 0xF0F0F0F0, r3 = 0x11111111\n\n"); 
 
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_1.bin");
 	if (rt < 0)
@@ -99,7 +102,9 @@ int main(void)
 
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
 
-	printf("Sprawdzanie instrukcji b (wywola kodowanie T2).\n\n");
+	printf("Sprawdzanie instrukcji b (kodowanie T2).\n");
+	printf("b test\nand r0, r1 (powinna sie nie wykonac)\ntest: and r2, r3\n");
+	printf("r0 = 0xFFFFFFFF, r1 = 0x0F0F0F0F, r2 = 0xF0F0F0F0, r3 = 0x11111111\n\n"); 
 
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_2.bin");
 	if (rt < 0)

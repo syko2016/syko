@@ -92,23 +92,23 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 		errno = ENOMEM;
 		return -ENOMEM;
 	}
-	memcpy(proc->memc + CM0_MEMC_OFFSET, buf, buf_size);
+	memcpy(proc->mem.memc + CM0_MEMC_OFFSET, buf, buf_size);
 	return 0;
 }
 
 int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size)
 {
-	if (buf_size + CM0_MEMD_OFFSET > CM0_MEMD_SIZE) {
+	if (buf_size > CM0_MEMD_SIZE) {
 		errno = ENOMEM;
 		return -ENOMEM;
 	}
-	memcpy(proc->memd + CM0_MEMD_OFFSET, buf, buf_size);
+	memcpy(proc->mem.memd, buf, buf_size);
 	return 0;
 }
 
 const uint8_t *cm0_get_memd(struct cm0 *proc)
 {
-	return proc->memd;
+	return proc->mem.memd;
 }
 
 int cm0_set_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size)
@@ -145,24 +145,22 @@ int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size)
 /* not tested. */
 int cm0_set_byte(struct cm0 *proc, uint8_t value, size_t address)
 {
-	if (address > CM0_MEMD_SIZE) {
-		errno = ENOMEM;
-		return -ENOMEM;
-	}
-	proc->memd[address] = value;
+	uint8_t *addr;
+
+	addr = cm0_mem_get(&proc->mem, address);
+	*addr = value;
+
 	return 0;
 }
 
 /* not tested. */
 int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address)
 {
-	if (address + sizeof(uint16_t) > CM0_MEMD_SIZE) {
-		errno = ENOMEM;
-		return -ENOMEM;
-	}
+	uint16_t *addr;
+		
+	addr = (uint16_t *)cm0_mem_get(&proc->mem, address);
 
-	for (int i = 0; i < 2; i++)
-		proc->memd[address + i] = value >> (8 * i);	
+	*addr = value;
 
 	return 0;
 }
@@ -170,39 +168,36 @@ int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address)
 /* not tested. */
 int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address)
 {
-	if (address + sizeof(uint32_t) > CM0_MEMD_SIZE) {
-		errno = ENOMEM;
-		return -ENOMEM;
-	}
+	uint32_t *addr;
+	
+	addr = (uint32_t *)cm0_mem_get(&proc->mem, address);
 
-	for (int i = 0; i < 4; i++) 
-		proc->memd[address + i] = value >> (8 * i);
+	*addr = value;
 
 	return 0;
 }
 
 int cm0_get_word(struct cm0 *proc, uint32_t *value, size_t address)
 {
-	if (address + sizeof(uint32_t) > CM0_MEMD_SIZE) {
-		errno = ENOMEM;
-		return -ENOMEM;
-	}
+	const uint32_t *addr;
 
-	*value = 0;
+	addr = (uint32_t *)cm0_mem_get(&proc->mem, address);
 
-	for (int i = 0; i < 4; i++) 
-		*value |= proc->memd[address + i] << (8 * i);
+	*value = *addr;
 
 	return 0;
 }
 
 int cm0_incr_PC(struct cm0 *proc)
 {
+	uint8_t *addr;
 	uint32_t pc = cm0_get_reg(proc, PC);
 	pc += 2;
 	
+	addr = cm0_mem_get(&proc->mem, pc - 2);
+
 	/* End of code detection */
-	if ((proc->memc[pc - 2] | proc->memc[pc - 2 + 1]) == 0)
+	if ((*addr | *(addr + 1)) == 0)
 		return -1;
 
 	else if (pc >= CM0_MEMC_SIZE)
@@ -216,11 +211,15 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 {
 	uint16_t instr;
 	uint32_t pc;
+	const uint8_t *addr;
 
 	pc = cm0_get_reg(proc, PC);
 	pc -= 2;
-	instr = (uint16_t)proc->memc[pc];
-	instr |= proc->memc[pc + 1] << 8;
+
+	addr = cm0_mem_get(&proc->mem, pc);
+
+	instr = (uint16_t)(*addr);
+	instr |= (*(addr + 1)) << 8;
 
 	return instr;
 }
@@ -369,18 +368,18 @@ uint8_t cm0_get_flag(struct cm0 *proc, enum cm0_flags flag)
 
 int cm0_init(struct cm0 *proc)
 {
-	proc->memd = NULL;
+	proc->mem.memd = NULL;
 
-	proc->memc = calloc(1, CM0_MEMC_SIZE);
-	if (!proc->memc) {
+	proc->mem.memc = calloc(1, CM0_MEMC_SIZE);
+	if (!proc->mem.memc) {
 		errno = ENOMEM;
 		return -ENOMEM;
 	}
-	proc->memd = calloc(1, CM0_MEMD_SIZE);
-	if (!proc->memd) {
+	proc->mem.memd = calloc(1, CM0_MEMD_SIZE);
+	if (!proc->mem.memd) {
 		errno = ENOMEM;
-		free(proc->memc);
-		proc->memc = NULL;
+		free(proc->mem.memc);
+		proc->mem.memc = NULL;
 		return -ENOMEM;
 	}
 
@@ -389,9 +388,17 @@ int cm0_init(struct cm0 *proc)
 
 void cm0_deinit(struct cm0 *proc)
 {
-	if (proc->memd)
-		free(proc->memd);
+	if (proc->mem.memd)
+		free(proc->mem.memd);
 	
-	if (proc->memc)
-		free(proc->memc);
+	if (proc->mem.memc)
+		free(proc->mem.memc);
+}
+
+uint8_t *cm0_mem_get(const struct cm0_mem *mem, size_t offset)
+{
+	if (offset < CM0_MEMD_OFFSET)
+		return mem->memc + offset;
+	else 
+		return mem->memd + (offset - CM0_MEMD_OFFSET);
 }
