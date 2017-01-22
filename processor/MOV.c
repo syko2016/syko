@@ -6,7 +6,7 @@ void cm0_MOV_immediate(struct cm0 *proc)
 	uint16_t instr;
 	uint8_t Rd;
 	int8_t imm8;
-
+	
 	/* Get actual instruction from program memory */
 	instr = cm0_get_instr(proc);
 

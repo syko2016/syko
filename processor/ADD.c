@@ -4,9 +4,10 @@ void cm0_ADD_immediate_T1(struct cm0 *proc)
 {
 	uint16_t instr;
 	uint8_t Rd, Rn;
-	int32_t op1, result;
+	uint32_t op1, result;
 	int8_t imm3;
 
+	print_name();	
 	instr = cm0_get_instr(proc);
 	Rd = instr & 0b0000000000000111;
 	Rn = (instr & 0b0000000000111000) >> 3;
@@ -47,7 +48,6 @@ void cm0_ADD_register_T1(struct cm0 *proc)
 	op2 = cm0_get_reg(proc, Rm);
 	result = op1 + op2;
 	cm0_set_reg(proc, Rd, result);
-
 }
 
 void cm0_ADD_register_T2(struct cm0 *proc)

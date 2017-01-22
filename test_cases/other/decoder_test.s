@@ -4,7 +4,7 @@
 	.global  main 
 	.type    main, %function 
 main: 
-	add	r2, r1, #3
+	adds	r2, r1, #3
 	add	r0, #250
 	add	r2, r1, r0
 	add	r12, PC

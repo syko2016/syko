@@ -7,7 +7,7 @@ include $(SRC_DIR)/test_cases/ANDS/make.config
 include $(SRC_DIR)/test_cases/BL/make.config
 include $(SRC_DIR)/test_cases/LDM/make.config
 include $(SRC_DIR)/test_cases/REV/make.config
-include $(SRC_DIR)/test_cases/ASR/make.config
+include $(SRC_DIR)/test_cases/ASRS/make.config
 include $(SRC_DIR)/test_cases/B/make.config
 include $(SRC_DIR)/test_cases/LDR/make.config
 PROC_OBJ := $(patsubst %, $(SRC_DIR)/processor/%,$(_PROC_OBJ))
@@ -19,14 +19,14 @@ LDM_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/LDM/%,$(_LDM_OBJ))
 LDM_ASM := $(patsubst %, $(SRC_DIR)/test_cases/LDM/%,$(_LDM_ASM))
 REV_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/REV/%,$(_REV_OBJ))
 REV_ASM := $(patsubst %, $(SRC_DIR)/test_cases/REV/%,$(_REV_ASM))
-ASR_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ASR/%,$(_ASR_OBJ))
-ASR_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ASR/%,$(_ASR_ASM))
+ASRS_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ASRS/%,$(_ASRS_OBJ))
+ASRS_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ASRS/%,$(_ASRS_ASM))
 B_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_OBJ))
 B_ASM := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_ASM))
 LDR_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/LDR/%,$(_LDR_OBJ))
 LDR_ASM := $(patsubst %, $(SRC_DIR)/test_cases/LDR/%,$(_LDR_ASM))
 
-all : ands_test bl_test ldm_test rev_test asr_test b_test ldr_test
+all : ands_test bl_test ldm_test rev_test asrs_test b_test ldr_test
 
 ands_test : $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(ANDS_OBJ) -o ./test_cases/ANDS/$@
@@ -40,8 +40,8 @@ ldm_test : $(PROC_OBJ) $(LDM_ASM) $(LDM_OBJ)
 rev_test : $(PROC_OBJ) $(REV_ASM) $(REV_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(REV_OBJ) -o ./test_cases/REV/$@
 
-asr_test : $(PROC_OBJ) $(ASR_ASM) $(ASR_OBJ)
-	gcc $(CFLAGS) $(PROC_OBJ) $(ASR_OBJ) -o ./test_cases/ASR/$@
+asrs_test : $(PROC_OBJ) $(ASRS_ASM) $(ASRS_OBJ)
+	gcc $(CFLAGS) $(PROC_OBJ) $(ASRS_OBJ) -o ./test_cases/ASRS/$@
 
 b_test : $(PROC_OBJ) $(B_ASM) $(B_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(B_OBJ) -o ./test_cases/B/$@
@@ -56,7 +56,7 @@ ldr_test : $(PROC_OBJ) $(LDR_ASM) $(LDR_OBJ)
 	arm-none-eabi-objcopy --output-target binary $< $@
 
 %.elf: %.s
-	arm-none-eabi-as -march=armv6-m $< -o $@
+	arm-none-eabi-as -mcpu=cortex-m0 $< -o $@
 
 clean:
 	rm -f $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ) $(BL_OBJ) 

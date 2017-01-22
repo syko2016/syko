@@ -4,4 +4,5 @@
 	.global  main 
 	.type    main, %function 
 main: 
-	asr r0, r1, #32
+	.syntax unified
+	asrs r0, r1, #4

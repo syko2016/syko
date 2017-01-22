@@ -75,10 +75,8 @@ void cm0_BL(struct cm0 *proc, const uint16_t prev_instr)
 	temp = ((S * 0b01111111) << 25) | temp;
 
 	/*Check condition*/
-	if (InITBlock() && (!LastInITBlock())) {
-		assert(0);
+	if (InITBlock() && (!LastInITBlock())) 
 		return; /* UNPREDICTABLE */	
-	}	
 	
 	cm0_set_reg(proc, LR, next_instr_addr);
 	
@@ -99,10 +97,8 @@ void cm0_LDM(struct cm0 *proc)
 	wback = !(registers & (1 << Rn));
 	address = cm0_get_reg(proc, Rn);
 
-	if (!registers) { 
-		assert(0);
+	if (!registers)
 		return; /* UNPREDICTABLE */
-	}
 
 	for (int i = 0; i < 8; i++) {
 		if (registers & (1 << i)) {

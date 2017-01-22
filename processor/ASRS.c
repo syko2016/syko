@@ -1,6 +1,6 @@
-#include "ASR.h"
+#include "ASRS.h"
 
-void cm0_ASR_immediate(struct cm0 *proc)
+void cm0_ASRS_immediate(struct cm0 *proc)
 {
 	uint8_t Rm, Rd, setflags, carry, imm5;
 	const uint16_t instr = cm0_get_instr(proc);
@@ -31,7 +31,7 @@ void cm0_ASR_immediate(struct cm0 *proc)
 	}
 }
 
-void cm0_ASR_register(struct cm0 *proc)
+void cm0_ASRS_register(struct cm0 *proc)
 {
 	uint8_t Rm, Rd, carry, shift, setflags;
 	const uint16_t instr = cm0_get_instr(proc);

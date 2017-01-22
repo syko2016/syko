@@ -1,7 +1,7 @@
 #include "cortex_m0.h"
 
 #include "ADD.h"
-#include "ASR.h"
+#include "ASRS.h"
 #include "B.h"
 #include "LDR.h"
 #include "MOV.h"
@@ -270,10 +270,10 @@ int cm0_decode_instruction(struct cm0 *proc)
 		cm0_ANDS(proc);
 		
 	else if ((instr & 0b1111100000000000) == 0b0001000000000000)
-		cm0_ASR_immediate(proc);
+		cm0_ASRS_immediate(proc);
 	
 	else if ((instr & 0b1111111111000000) == 0b0100000100000000)
-		cm0_ASR_register(proc);
+		cm0_ASRS_register(proc);
 
 	else if ((instr & 0b1111000000000000) == 0b1101000000000000)
 		cm0_B_T1(proc);
