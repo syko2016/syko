@@ -2,6 +2,7 @@
 #define _ADD_H_
 
 #include "cortex_m0.h"
+#include "initblock.h"
 
 void cm0_ADD_immediate_T1(struct cm0 *proc);
 void cm0_ADD_immediate_T2(struct cm0 *proc);

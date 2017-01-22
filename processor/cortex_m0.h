@@ -81,18 +81,19 @@ struct cm0_mem {
 	uint8_t *memd;
 };
 
-/** @brief: Memory map function.
- *
- * This function translate offset in memory map to real memory used by this
- * application. I.e. to get memc from struct cm0_mem, call 
- * cm0_mem_get(&cm0_mem, CM0_MEMD_OFFSET);
- */ 
-uint8_t *cm0_mem_get(const struct cm0_mem *mem, size_t offset);
-
 struct cm0 {
 	struct cm0_mem mem;
 	struct cm0_registers regs;
 };
+
+/** @brief: Memory map function.
+ *
+ * This function translates offset in memory map to real memory used by this
+ * application. I.e. to get memc from struct cm0, call 
+ * cm0_mem_get(&cm0_mem, CM0_MEMD_OFFSET);
+ */ 
+uint8_t *cm0_mem_get(struct cm0 *proc, size_t offset);
+
 /** @brief: Processor internal reset.
  *
  *  This function resets memory and registers as it is specified in processor
@@ -142,6 +143,11 @@ int cm0_set_memc(struct cm0 *proc, uint8_t *buf, size_t buf_size);
  */
 int cm0_set_memd(struct cm0 *proc, uint8_t *buf, size_t buf_size);
 
+/**
+ * @brief Memory data getter
+ *
+ * This function returns pointer to RAM memory.
+ */
 const uint8_t *cm0_get_memd(struct cm0 *proc);
 
 /** @brief: Byte setter function.
@@ -158,6 +164,7 @@ const uint8_t *cm0_get_memd(struct cm0 *proc);
  * on failure errno is set accordingly to the return value.
  */
 int cm0_set_byte(struct cm0 *proc, uint8_t value, size_t address);
+
 /** @brief: Halfword setter function.
  *
  * This function sets halfword at specific address.
@@ -191,10 +198,14 @@ int cm0_get_word(struct cm0 *proc, uint32_t *value, size_t address);
  */
 int cm0_run(struct cm0 *proc);
 
-/*
- * TODO comments
+/** @brief PC reg increment function
+ * 
+ * This function increments PC by 2 bytes, and checks whether there are
+ * any instructions left. If there is a valid instruction, function returns
+ * 0. If not - funtion returns -1.
  */
 int cm0_incr_PC(struct cm0 *proc);
+
 uint16_t cm0_get_instr(struct cm0 *proc);
 
 /** @brief Register setter function.
@@ -215,6 +226,10 @@ int cm0_get_all_regs(struct cm0 *proc, uint32_t *buf, size_t buf_size);
  */
 int cm0_set_flag(struct cm0 *proc, enum cm0_flags flag, uint8_t value);  
 
+/** @brief Flag getter function.
+ * 
+ * Function returns state of passed flag.
+ */
 uint8_t cm0_get_flag(struct cm0 *proc, enum cm0_flags flag);
 
 #endif

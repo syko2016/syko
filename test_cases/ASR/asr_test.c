@@ -66,7 +66,9 @@ int main(void)
 	rt = cm0_init(&proc);
 	if (rt < 0)
 		error("cm0_init", &proc);
+
 	printf("###Test 1###\nasr r0, r1, #4; r0 == 0, r1 == 16\n");
+
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_1.bin");
 	if (rt < 0)
 		error("load", &proc);

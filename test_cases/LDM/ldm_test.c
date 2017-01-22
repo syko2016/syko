@@ -64,7 +64,12 @@ int main(void)
 		"porownuje rejestry procesora z docelowymi rejestrami z pliku\n"
 		"result_regs_x.bin.\n\n");
 
-	printf("Pierwszy wariant:\n");
+	printf("ldm r0!, {r1, r2, r3}\n");
+	printf("Wartosci poczatkowe:\n");
+	printf("r0 = 0x00200400, r1 = 0, r2 = 0, r3 = 0.\n");
+	printf("RAM[0x00200400] == 0x11111111\n");
+	printf("RAM[0x00200404] == 0x22222222\n");
+	printf("RAM[0x00200408] == 0x33333333\n\n");
 
 	rt = cm0_init(&proc);
 	if (rt < 0)
@@ -108,7 +113,16 @@ int main(void)
 
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
 
-	printf("Drugi wariant:\n");
+	printf("\nDrugi wariant:\n");
+	printf("ldm r0, {r0, r4, r5, r6}\n");
+	printf("Wartosci poczatkowe:\n");
+	printf("r0 = 0x00200400, r4 = 0, r5 = 0, r6 = 0.\n");
+	printf("RAM[0x00200400] == 0x01010101\n");
+	printf("RAM[0x00200404] == 0x10101010\n");
+	printf("RAM[0x00200408] == 0x11111111\n");
+	printf("RAM[0x0020040C] == 0x12121212\n");
+	printf("RAM[0x00200410] == 0x21212121\n");
+
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_2.bin");
 	if (rt < 0)
 		error("load", &proc);

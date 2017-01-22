@@ -65,6 +65,9 @@ int main(void)
 		"result_regs_x.bin.\n\n");
 
 	printf("\nPierwszy wariant: LDR T1\n");
+	printf("ldr r0, [r1, #+16]\n");
+	printf("r0 = 0, r1 = 0x00200000\n");
+	printf("RAM[0x00200010] = 0x78563412\n");
 
 	rt = cm0_init(&proc);
 	if (rt < 0)
@@ -109,6 +112,10 @@ int main(void)
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
 
 	printf("Drugi wariant: LDR T2\n");
+	printf("ldr r0, [SP, #+16]\n");
+	printf("r0 = 0, SP = 0x00200000\n");
+	printf("RAM[0x00200010] = 0x78563412\n");
+
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_2.bin");
 	if (rt < 0)
 		error("load", &proc);
@@ -148,6 +155,10 @@ int main(void)
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
 
 	printf("\nTrzeci wariant: LDR (literal)\n");
+	printf("ldr r0, [PC, #+128]\n");
+	printf("r0 = 0, PC = 0x00000100\n");
+	printf("FLASH[0x00200010] = 0x78563412\n");
+
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_3.bin");
 	if (rt < 0)
 		error("load", &proc);
@@ -189,6 +200,10 @@ int main(void)
 	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
 
 	printf("\nCzwarty wariant: LDR (register)\n");
+	printf("ldr r0, [r1, r2]\n");
+	printf("r0 = 0, r1 = 0x00100010, r2 = 0x00100000\n");
+	printf("FLASH[0x00200010] = 0x78563412\n");
+
 	rt = load(buf_memc, sizeof(buf_memc), "file_code_4.bin");
 	if (rt < 0)
 		error("load", &proc);

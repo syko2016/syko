@@ -26,7 +26,6 @@ main:
 	ldr	r0, [PC, #128]
 	ldr	r0, [r1, r2]
 	mov	r0, #128
-	//movs	r1, r0 <- this does not trigger MOV (register) encoding T2!
 	rev r0, r1
 	str r0, [r1, #8]
 	str r0, [SP, #128]

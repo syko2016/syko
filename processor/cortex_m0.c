@@ -9,7 +9,7 @@
 #include "STR.h"
 
 #define CM0_MEMC_OFFSET 0x100UL
-#define CM0_MEMD_OFFSET 0x200000UL
+#define CM0_MEMD_OFFSET 0x200000UL /* Here should be 0x20000000! */
 
 static inline uint32_t *cm0_get_reg_addr(struct cm0 *proc, 
 					 enum cm0_reg_name reg)
@@ -147,7 +147,7 @@ int cm0_set_byte(struct cm0 *proc, uint8_t value, size_t address)
 {
 	uint8_t *addr;
 
-	addr = cm0_mem_get(&proc->mem, address);
+	addr = cm0_mem_get(proc, address);
 	*addr = value;
 
 	return 0;
@@ -158,7 +158,7 @@ int cm0_set_halfword(struct cm0 *proc, uint16_t value, size_t address)
 {
 	uint16_t *addr;
 		
-	addr = (uint16_t *)cm0_mem_get(&proc->mem, address);
+	addr = (uint16_t *)cm0_mem_get(proc, address);
 
 	*addr = value;
 
@@ -170,7 +170,7 @@ int cm0_set_word(struct cm0 *proc, uint32_t value, size_t address)
 {
 	uint32_t *addr;
 	
-	addr = (uint32_t *)cm0_mem_get(&proc->mem, address);
+	addr = (uint32_t *)cm0_mem_get(proc, address);
 
 	*addr = value;
 
@@ -181,7 +181,7 @@ int cm0_get_word(struct cm0 *proc, uint32_t *value, size_t address)
 {
 	const uint32_t *addr;
 
-	addr = (uint32_t *)cm0_mem_get(&proc->mem, address);
+	addr = (uint32_t *)cm0_mem_get(proc, address);
 
 	*value = *addr;
 
@@ -194,7 +194,7 @@ int cm0_incr_PC(struct cm0 *proc)
 	uint32_t pc = cm0_get_reg(proc, PC);
 	pc += 2;
 	
-	addr = cm0_mem_get(&proc->mem, pc - 2);
+	addr = cm0_mem_get(proc, pc - 2);
 
 	/* End of code detection */
 	if ((*addr | *(addr + 1)) == 0)
@@ -216,7 +216,7 @@ uint16_t cm0_get_instr(struct cm0 *proc)
 	pc = cm0_get_reg(proc, PC);
 	pc -= 2;
 
-	addr = cm0_mem_get(&proc->mem, pc);
+	addr = cm0_mem_get(proc, pc);
 
 	instr = (uint16_t)(*addr);
 	instr |= (*(addr + 1)) << 8;
@@ -305,9 +305,6 @@ int cm0_decode_instruction(struct cm0 *proc)
 	else if ((instr & 0b1111111100000000) == 0b0100011000000000)
 		cm0_MOV_register_T1(proc);
 
-	else if ((instr & 0b1111111111000000) == 0b0000000000000000)
-		cm0_MOV_register_T2(proc);
-
 	else if ((instr & 0b1111111111000000) == 0b1011101000000000)
 		cm0_REV(proc);
 	
@@ -368,8 +365,6 @@ uint8_t cm0_get_flag(struct cm0 *proc, enum cm0_flags flag)
 
 int cm0_init(struct cm0 *proc)
 {
-	proc->mem.memd = NULL;
-
 	proc->mem.memc = calloc(1, CM0_MEMC_SIZE);
 	if (!proc->mem.memc) {
 		errno = ENOMEM;
@@ -388,17 +383,21 @@ int cm0_init(struct cm0 *proc)
 
 void cm0_deinit(struct cm0 *proc)
 {
-	if (proc->mem.memd)
-		free(proc->mem.memd);
-	
-	if (proc->mem.memc)
-		free(proc->mem.memc);
+	free(proc->mem.memd);
+	free(proc->mem.memc);
 }
 
-uint8_t *cm0_mem_get(const struct cm0_mem *mem, size_t offset)
+uint8_t *cm0_mem_get(struct cm0 *proc, size_t offset)
 {
-	if (offset < CM0_MEMD_OFFSET)
-		return mem->memc + offset;
-	else 
-		return mem->memd + (offset - CM0_MEMD_OFFSET);
+	if (offset < CM0_MEMD_OFFSET) {
+		if (offset > CM0_MEMC_SIZE)
+			return NULL;
+
+		return proc->mem.memc + offset;
+	} else {
+		if (offset - CM0_MEMD_OFFSET > CM0_MEMD_SIZE)
+			return NULL;
+
+		return proc->mem.memd + (offset - CM0_MEMD_OFFSET);
+	}
 }

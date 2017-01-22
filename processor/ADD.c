@@ -3,11 +3,11 @@
 void cm0_ADD_immediate_T1(struct cm0 *proc)
 {
 	uint16_t instr;
-	uint8_t Rd;
-	uint8_t Rn;
+	uint8_t Rd, Rn, setflags;
 	int32_t op1, result;
 	int8_t imm3;
 
+	setflags = !InITBlock();
 	instr = cm0_get_instr(proc);
 	Rd = instr & 0b0000000000000111;
 	Rn = (instr & 0b0000000000111000) >> 3;
@@ -21,10 +21,11 @@ void cm0_ADD_immediate_T1(struct cm0 *proc)
 void cm0_ADD_immediate_T2(struct cm0 *proc)
 {
 	uint16_t instr;
-	uint8_t Rdn;
+	uint8_t Rdn, setflags;
 	int32_t op1, result;
 	int8_t imm8;
 
+	setflags = !InITBlock();
 	instr = cm0_get_instr(proc);
 	imm8 = instr & 0b0000000011111111;
 	Rdn = (instr & 0b0000011100000000) >> 8;
@@ -36,9 +37,10 @@ void cm0_ADD_immediate_T2(struct cm0 *proc)
 void cm0_ADD_register_T1(struct cm0 *proc)
 {
 	uint16_t instr;
-	uint8_t Rd, Rn, Rm;
+	uint8_t Rd, Rn, Rm, setflags;
 	int32_t op1, op2, result;
 
+	setflags = !InITBlock();
 	instr = cm0_get_instr(proc);
 	Rd = instr & 0b0000000000000111;
 	Rn = (instr & 0b0000000000111000) >> 3;
@@ -48,6 +50,7 @@ void cm0_ADD_register_T1(struct cm0 *proc)
 	op2 = cm0_get_reg(proc, Rm);
 	result = op1 + op2;
 	cm0_set_reg(proc, Rd, result);
+
 }
 
 void cm0_ADD_register_T2(struct cm0 *proc)
@@ -64,6 +67,7 @@ void cm0_ADD_register_T2(struct cm0 *proc)
 	op2 = cm0_get_reg(proc, Rm);
 	result = op1 + op2;
 	cm0_set_reg(proc, Rdn, result);
+
 }
 
 void cm0_ADD_SP_plus_immediate_T1(struct cm0 *proc)
