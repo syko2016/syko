@@ -65,4 +65,5 @@ ldr_test : $(PROC_OBJ) $(LDR_ASM) $(LDR_OBJ)
 	arm-none-eabi-as -mcpu=cortex-m0 $< -o $@
 
 clean:
-	rm -f $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ) $(BL_OBJ) 
+	rm -f $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ) $(ADD_OBJ) $(ADD_ASM) $(BL_OBJ) $(BL_ASM) $(LDM_OBJ)
+	rm -f $(LDM_ASM) $(REV_OBJ) $(REV_ASM) $(ASRS_OBJ) $(ASRS_ASM) $(B_OBJ) $(B_ASM) $(LDR_OBJ) $(LDR_ASM)

@@ -67,17 +67,17 @@ int main(void)
 	if (rt < 0)
 		error("cm0_init", &proc);
 
-	rt = load(buf_memc, sizeof(buf_memc), "file_code.bin");
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_1.bin");
 	if (rt < 0)
 		error("load", &proc);
 
 	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
-		  "input_regs.bin");
+		  "input_regs_1.bin");
 	if (rt < 0)
 		error("load", &proc);
 
 	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
-		  "result_regs.bin");
+		  "result_regs_1.bin");
 	if (rt < 0)
 		error("load", &proc);
 
@@ -89,9 +89,247 @@ int main(void)
 	if (rt < 0)
 		error("cm0_set_memc", &proc);
 
-	printf("Sprawdzanie instrukcji ADD (immediate) Encoding T1\n");
+	printf("\nSprawdzanie instrukcji ADD (immediate) Encoding T1\n");
 	printf("add r0, r1, #5\n");
 	printf("r0 = 0x00000000, r1 = 0x01010101, #5\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_2.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_2.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_2.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (immediate) Encoding T2\n");
+	printf("add r0, #64\n");
+	printf("r0 = 0x01010101\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_3.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (register) Encoding T1\n");
+	printf("add r0, r1, r2\n");
+	printf("r0 = 0x00000000, r1 = 0x01010101, r2 = 0x10101010\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_4.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_4.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_4.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (register) Encoding T2\n");
+	printf("add r3, r4\n");
+	printf("r3 = 0x11111111, r4 = 0x10101010\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_5.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_5.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_5.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (SP plus immediate) T1\n");
+	printf("add r0, SP, #64\n");
+	printf("r0 = 0x00000000, SP = 0x11111111\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_6.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_6.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_6.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (SP plus immediate) T2\n");
+	printf("add SP, #64\n");
+	printf("SP = 0x11111111\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_7.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_7.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_7.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (SP plus register) T1\n");
+	printf("add r0, SP, r0\n");
+	printf("r0 = 0x0202020202, SP = 0x11111111\n\n"); 
+
+	cm0_run(&proc);
+
+	rt = cm0_get_all_regs(&proc, buf_regs, sizeof(buf_regs));
+	if (rt < 0)
+		error("cm0_get_all_regs", &proc);
+
+	check_regs(buf_regs, buf_regs_org, sizeof(buf_regs)/sizeof(uint32_t));
+
+	rt = load(buf_memc, sizeof(buf_memc), "file_code_6.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs, sizeof(buf_regs), 
+		  "input_regs_6.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = load((uint8_t *)buf_regs_org, sizeof(buf_regs_org), 
+		  "result_regs_6.bin");
+	if (rt < 0)
+		error("load", &proc);
+
+	rt = cm0_set_all_regs(&proc, buf_regs, sizeof(buf_regs));  
+	if (rt < 0)
+		error("cm0_set_all_regs", &proc);
+	
+	rt = cm0_set_memc(&proc, buf_memc, sizeof(buf_memc));
+	if (rt < 0)
+		error("cm0_set_memc", &proc);
+
+	printf("\nSprawdzanie instrukcji ADD (SP plus register) T2\n");
+	printf("add SP, r0\n");
+	printf("r0 = 0x00000010, SP = 0x11111111\n\n"); 
 
 	cm0_run(&proc);
 
