@@ -9,6 +9,7 @@ include $(SRC_DIR)/test_cases/BL/make.config
 include $(SRC_DIR)/test_cases/LDM/make.config
 include $(SRC_DIR)/test_cases/MOV/make.config
 include $(SRC_DIR)/test_cases/REV/make.config
+include $(SRC_DIR)/test_cases/STR/make.config
 include $(SRC_DIR)/test_cases/ASRS/make.config
 include $(SRC_DIR)/test_cases/B/make.config
 include $(SRC_DIR)/test_cases/LDR/make.config
@@ -31,8 +32,10 @@ B_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_OBJ))
 B_ASM := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_ASM))
 LDR_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/LDR/%,$(_LDR_OBJ))
 LDR_ASM := $(patsubst %, $(SRC_DIR)/test_cases/LDR/%,$(_LDR_ASM))
+STR_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/STR/%,$(_STR_OBJ))
+STR_ASM := $(patsubst %, $(SRC_DIR)/test_cases/STR/%,$(_STR_ASM))
 
-all : ands_test bl_test ldm_test rev_test asrs_test b_test ldr_test add_test mov_test
+all : ands_test bl_test ldm_test rev_test asrs_test b_test ldr_test add_test mov_test str_test
 
 ands_test : $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(ANDS_OBJ) -o ./test_cases/ANDS/$@
@@ -60,6 +63,9 @@ b_test : $(PROC_OBJ) $(B_ASM) $(B_OBJ)
 
 ldr_test : $(PROC_OBJ) $(LDR_ASM) $(LDR_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(LDR_OBJ) -o ./test_cases/LDR/$@
+
+str_test : $(PROC_OBJ) $(STR_ASM) $(STR_OBJ)
+	gcc $(CFLAGS) $(PROC_OBJ) $(STR_OBJ) -o ./test_cases/STR/$@
 
 %.o: %.c
 	gcc $(CFLAGS) -c $< -o $@
