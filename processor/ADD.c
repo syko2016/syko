@@ -7,7 +7,6 @@ void cm0_ADD_immediate_T1(struct cm0 *proc)
 	uint32_t op1, result;
 	int8_t imm3;
 
-	print_name();	
 	instr = cm0_get_instr(proc);
 	Rd = instr & 0b0000000000000111;
 	Rn = (instr & 0b0000000000111000) >> 3;
