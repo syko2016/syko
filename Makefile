@@ -4,6 +4,7 @@ CFLAGS += -O0 -g3 -Wall -Wextra -std=gnu99 -I./processor/
 SRC_DIR = .
 include $(SRC_DIR)/processor/make.config
 include $(SRC_DIR)/test_cases/ANDS/make.config
+include $(SRC_DIR)/test_cases/ADD/make.config
 include $(SRC_DIR)/test_cases/BL/make.config
 include $(SRC_DIR)/test_cases/LDM/make.config
 include $(SRC_DIR)/test_cases/REV/make.config
@@ -13,6 +14,8 @@ include $(SRC_DIR)/test_cases/LDR/make.config
 PROC_OBJ := $(patsubst %, $(SRC_DIR)/processor/%,$(_PROC_OBJ))
 ANDS_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ANDS/%,$(_ANDS_OBJ))
 ANDS_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ANDS/%,$(_ANDS_ASM))
+ADD_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/ADD/%,$(_ADD_OBJ))
+ADD_ASM := $(patsubst %, $(SRC_DIR)/test_cases/ADD/%,$(_ADD_ASM))
 BL_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/BL/%,$(_BL_OBJ))
 BL_ASM := $(patsubst %, $(SRC_DIR)/test_cases/BL/%,$(_BL_ASM))
 LDM_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/LDM/%,$(_LDM_OBJ))
@@ -26,10 +29,13 @@ B_ASM := $(patsubst %, $(SRC_DIR)/test_cases/B/%,$(_B_ASM))
 LDR_OBJ := $(patsubst %, $(SRC_DIR)/test_cases/LDR/%,$(_LDR_OBJ))
 LDR_ASM := $(patsubst %, $(SRC_DIR)/test_cases/LDR/%,$(_LDR_ASM))
 
-all : ands_test bl_test ldm_test rev_test asrs_test b_test ldr_test
+all : ands_test bl_test ldm_test rev_test asrs_test b_test ldr_test add_test
 
 ands_test : $(PROC_OBJ) $(ANDS_ASM) $(ANDS_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(ANDS_OBJ) -o ./test_cases/ANDS/$@
+
+add_test : $(PROC_OBJ) $(ADD_ASM) $(ADD_OBJ)
+	gcc $(CFLAGS) $(PROC_OBJ) $(ADD_OBJ) -o ./test_cases/ADD/$@
 
 bl_test : $(PROC_OBJ) $(BL_ASM) $(BL_OBJ)
 	gcc $(CFLAGS) $(PROC_OBJ) $(BL_OBJ) -o ./test_cases/BL/$@

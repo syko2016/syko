@@ -254,7 +254,7 @@ int cm0_decode_instruction(struct cm0 *proc)
 	else if ((instr & 0b1111111110000111) == 0b0100010010000101)
 		cm0_ADD_SP_plus_register_T2(proc);
 
-	else if ((instr & 0b1111111100000000) == 0b0001110000000000)
+	else if ((instr & 0b1111111000000000) == 0b0001110000000000)
 		cm0_ADD_immediate_T1(proc);
 
 	else if ((instr & 0b1111100000000000) == 0b0011000000000000)
